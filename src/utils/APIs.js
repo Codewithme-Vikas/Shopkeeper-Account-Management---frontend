@@ -28,3 +28,6 @@ export const GET_ALL_SELL_ORDERS = BASE_URL + 'order/getAllSellOrders';
 export const GET_ALL_BUY_ORDERS = BASE_URL + 'order/getAllBuyOrders';
 
 export const CREATE_ORDER = BASE_URL + 'order/create';
+export const EDIT_ORDER = BASE_URL + 'order/update';
+
+export const GET_ORDER = BASE_URL + 'order/getOrder/';

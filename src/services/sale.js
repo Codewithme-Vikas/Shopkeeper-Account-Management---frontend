@@ -1,7 +1,10 @@
 import toast from "react-hot-toast";
+
 import { buyOrdersNo, sellOrdersNo } from "../slices/data";
-import { GET_ALL_BUY_ORDERS, GET_ALL_SELL_ORDERS } from "../utils/APIs";
 import { apiConnector } from "../utils/apiConnector"
+
+import { GET_ALL_BUY_ORDERS, GET_ALL_SELL_ORDERS,GET_ORDER } from "../utils/APIs";
+
 
 export function totalNoOfOrders(){
     return async (dispatch)=>{
@@ -24,3 +27,16 @@ export function totalNoOfOrders(){
         }
     }
 };
+
+
+// I put here because it used by two components - View and Edit sale
+export async function fetchSale( orderId, setSaleData){
+    try {
+        const { orderDoc } = await apiConnector( GET_ORDER + orderId);
+        setSaleData( orderDoc );
+        return orderDoc;
+    } catch (error) {
+        console.log("GET ORDER, API ERROR............", error)
+        toast.error(error.message)
+    }
+}

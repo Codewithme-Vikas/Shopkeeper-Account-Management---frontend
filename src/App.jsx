@@ -15,6 +15,8 @@ import CustomerView from './components/customer/CustomerView'
 import CustomerReport from './components/reports/CustomerReport'
 import ProductReport from './components/reports/ProductReport'
 import SaleReport from './components/reports/SaleReport'
+import SaleView from './components/sale/SaleView'
+import EditSale from './components/sale/EditSale'
 
 const router = createBrowserRouter([
     {
@@ -41,6 +43,14 @@ const router = createBrowserRouter([
             {
                 path: "sale",
                 element: <SaleInvoice />
+            },
+            {
+                path : 'sale/:id',
+                element : <SaleView/>
+            },
+            {
+                path : 'sale/:id/edit',
+                element : <EditSale/>
             },
             {
                 path : 'report/customer',
