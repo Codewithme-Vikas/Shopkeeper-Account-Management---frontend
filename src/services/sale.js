@@ -1,0 +1,26 @@
+import toast from "react-hot-toast";
+import { buyOrdersNo, sellOrdersNo } from "../slices/data";
+import { GET_ALL_BUY_ORDERS, GET_ALL_SELL_ORDERS } from "../utils/APIs";
+import { apiConnector } from "../utils/apiConnector"
+
+export function totalNoOfOrders(){
+    return async (dispatch)=>{
+        try {
+            const {allBuyOrders} = await apiConnector(GET_ALL_BUY_ORDERS);
+            const {allSellOrders} = await apiConnector(GET_ALL_SELL_ORDERS);
+            
+            const totalBuyOrders = allBuyOrders.length;
+            const totalSellOrders = allSellOrders.length;
+
+            dispatch( buyOrdersNo(totalBuyOrders) )
+            dispatch( sellOrdersNo(totalSellOrders) )
+            
+            localStorage.setItem("totalBuyOrders", JSON.stringify(totalBuyOrders));
+            localStorage.setItem("totalSellOrders", JSON.stringify(totalSellOrders))
+
+        } catch (error) {
+            console.log("GET ORDERS no. API ERROR..........", error)
+            toast.error(error.message)
+        }
+    }
+};
