@@ -34,7 +34,6 @@ export async function fetchSale( orderId, setSaleData){
     try {
         const { orderDoc } = await apiConnector( GET_ORDER + orderId);
         setSaleData( orderDoc );
-        return orderDoc;
     } catch (error) {
         console.log("GET ORDER, API ERROR............", error)
         toast.error(error.message)
