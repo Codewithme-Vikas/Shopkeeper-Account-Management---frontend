@@ -5,7 +5,7 @@ import { TextField, Select, MenuItem, IconButton } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 
-import { productAmount } from '../../utils/helper';
+import { productAmount } from '../../../utils/helper';
 
 const SelectProduct = ({ products, selectedProducts, setSelectedProducts }) => {
 

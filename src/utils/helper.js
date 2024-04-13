@@ -60,8 +60,8 @@ export const productAmount = (product) => {
 
 // ************************ Send Message **************************
 export const sendWhatshappMsg = (saleData) => {
-    const { customer, note, orderPrice, createdAt, products, discount, advance } = saleData;
-
+    const { customer, note, orderPrice, createdAt, products, discount, advance, type } = saleData;
+    console.log( type , 'whats')
     function generateMsg() {
         // Create a message template
         let msg = `Hi ${customer.name},\n\n`;

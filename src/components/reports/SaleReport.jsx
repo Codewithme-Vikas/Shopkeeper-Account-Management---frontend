@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
-import SaleList from "../sale/SaleList"
+import SaleList from "./SaleList"
 import { apiConnector } from "../../utils/apiConnector";
 import { GET_ALL_ORDERS } from "../../utils/APIs";
 import { customFilter } from "../../utils/helper";
@@ -18,7 +18,6 @@ const SaleReport = () => {
 
 
     const data = salesData.filter(customFilter('type', path === 'sale' ? 'Sell' : 'Buy'));
-    const title = path === 'sale' ? 'Sell' : 'Purchase';
 
     async function fetchSales() {
         try {
@@ -33,11 +32,11 @@ const SaleReport = () => {
     useEffect(() => {
         fetchSales();
     }, []);
-
+    
     return (
         <div>
 
-            <SaleList salesData={data} title={title} />
+            <SaleList salesData={data}  type={path === 'sale' ? 'sale' : 'purchase'}/>
         </div>
     )
 }

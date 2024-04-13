@@ -1,38 +1,36 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Button, TextField, InputLabel, Select, MenuItem, FormControl } from '@mui/material'
 
-import FormLogo from "../common/FormLogo"
-import BasicModel from '../helper/BasicModal';
+import FormLogo from "../../common/FormLogo"
+import BasicModel from '../../helper/BasicModal';
 import SelectProduct from './SelectProduct'
 
-import { CGST_RATES, IGST_RATES, SGST_RATES } from '../../utils/constants';
-import { customSort, formattedDate, getSum } from '../../utils/helper'
-import { apiConnector } from "../../utils/apiConnector"
-import { EDIT_ORDER } from '../../utils/APIs';
+import { CGST_RATES, IGST_RATES, SGST_RATES } from '../../../utils/constants';
+import { customSort,customFilter, formattedDate, getSum, sendWhatshappMsg } from '../../../utils/helper'
+import { totalNoOfOrders } from '../../../services/order';
+import { apiConnector } from "../../../utils/apiConnector"
+import { CREATE_ORDER } from '../../../utils/APIs';
+import { increaseBuyOrders, increaseSellOrders } from '../../../slices/data';
+import { fetchCustomers } from '../../../services/customer';
+import { fetchProducts } from '../../../services/product';
 
-import { fetchSale } from '../../services/sale';
-import { fetchCustomers } from '../../services/customer';
-import { fetchProducts } from '../../services/product';
+const Invoice = ({ type }) => {
 
+    const { customers, products, totalSellOrders, totalBuyOrders } = useSelector(store => store.data);
 
-const EditSale = () => {
-
-    const { id } = useParams();
-    const [saleData, setSaleData] = useState('');
-    const navigate = useNavigate();
-
+    
     const dispatch = useDispatch();
-    const customers = useSelector(store => store.data.customers);
-    const products = useSelector(store => store.data.products);
 
+    // filter out appropriate customers and  sort in alphabetic manner
+    const customersList = [...customers].filter(customFilter('accountType' , type === 'sale' ? 'Buyer' : 'Seller' )).sort(customSort('name'));
+    
+    // ****************** Form/API data - Start**********************
+    const invoiceNo = type === 'sale' ? (totalSellOrders + 1) : (totalBuyOrders + 1);
 
-
-    // form data 
-    const [selectedCustomer, setSelectedCustomer] = useState({});
+    const [selectedCustomer, setSelectedCustomer] = useState('');
     const [selectedProducts, setSelectedProducts] = useState([]); // array of objects
     const [discount, setDiscount] = useState(0);
     const [CGST, setCGST] = useState('');
@@ -46,20 +44,22 @@ const EditSale = () => {
     // amount after discount
     const discountAmount = productsAmount - discount;
     // amount after tax
-    let totalAmount = discountAmount + (discountAmount * (CGST + SGST + IGST)) / 100;
+    const totalAmount = discountAmount + (discountAmount * (CGST + SGST + IGST)) / 100;
 
-    async function editHandler() {
+    // ******************Form/API Data - End **********************
+
+    async function submitHandler() {
         try {
 
             // Frontend checks --> for user better expreience
-            if (!selectedCustomer) {
+            if(!selectedCustomer){
                 return toast.error("Select Customer.")
-            } else if (selectedProducts.length === 0) {
+            } else if( selectedProducts.length === 0){
                 return toast.error("At Least select a product")
-            } else if (discount < 0) {
+            } else if( discount < 0 ){
                 return toast.error("Discount can't be negative.")
-            }
-            else if (totalAmount <= 0) {
+            } 
+            else if( totalAmount <= 0){
                 return toast.error("Amount can't be 0 or less.")
             }
 
@@ -67,12 +67,10 @@ const EditSale = () => {
 
 
             // ******************CALL API *************
-            // Note :- The ._id & customerId , problem is due to backend side API's response ( saleData has customerId and customers has ._id )
             const orderData = {
-                orderId: id,
-                customerId: selectedCustomer._id || selectedCustomer.customerId,
+                customerId: selectedCustomer._id,
                 customer: {
-                    customerId: selectedCustomer._id || selectedCustomer.customerId,
+                    customerId: selectedCustomer._id,
                     name: selectedCustomer.name,
                     email: selectedCustomer.email,
                     phone: selectedCustomer.phone,
@@ -81,6 +79,8 @@ const EditSale = () => {
                     PAN: selectedCustomer.PAN,
                     accountType: selectedCustomer.accountType
                 },
+                type: type === 'sale' ? 'Sell' : 'Buy',
+                invoiceNo: invoiceNo,
                 products: selectedProducts,
                 discount: discount,
                 GST: { SGST, CGST, IGST },
@@ -89,12 +89,19 @@ const EditSale = () => {
                 note: note
             }
 
-            await apiConnector( EDIT_ORDER, 'POST', orderData)
-            toast.success('Sale Updated!');
+            const {orderDoc} = await apiConnector(CREATE_ORDER, 'POST', orderData)
+            toast.success(`${type} add successfully`);
+
+            sendWhatshappMsg(orderDoc);
+
+            if( type === 'sale'){
+                dispatch(increaseSellOrders());
+            } else if( type === 'purchase'){
+                dispatch(increaseBuyOrders());
+            }
 
             // reset all the state values
-            // resetHandler();
-            return navigate(`/sale/${id}`)
+            resetHandler();
 
         } catch (error) {
             console.log('ORDER DATA API ERROR.............', error);
@@ -102,27 +109,23 @@ const EditSale = () => {
         }
     }
 
+    
+    function resetHandler() {
+        setSelectedCustomer('');
+        setSelectedProducts([]);
+        setDiscount(0);
+        setCGST('');
+        setIGST('');
+        setSGST('');
+        setAdvance(0);
+        setNote('');
+    }
 
     useEffect(() => {
-        fetchSale(id, setSaleData)
         dispatch(fetchCustomers());
-        dispatch(fetchProducts());
-    }, [])
-
-    // update the states if saleData exists
-    useEffect(() => {
-        if (saleData) {
-            setSelectedCustomer(saleData.customer);
-            setSelectedProducts(saleData.products);
-            setDiscount(saleData?.discount);
-            setCGST(saleData?.GST?.CGST ?? '');
-            setSGST(saleData?.GST?.SGST ?? '');
-            setIGST(saleData?.GST?.IGST ?? '');
-            setAdvance(saleData?.advance);
-            setNote(saleData?.note);
-        }
-    }, [saleData])
-
+        dispatch(fetchProducts())
+        dispatch(totalNoOfOrders());
+    }, []);
 
     return (
         <div>
@@ -130,11 +133,11 @@ const EditSale = () => {
             <div className='py-4 px-6  border-2  border-slate-400 shadow-xl rounded-md'>
 
 
-                <FormLogo />
+                <FormLogo title={type}/>
 
                 {/* START : ************ Customer Data, Date , Invoice No. ************* */}
                 <div>
-                    <p className='text-lg font-medium mb-2'>Billed To :</p>
+                    <p className='text-lg font-medium mb-2'>{ type === 'sale' ? 'Billed To ' : 'Buy From '} :</p>
 
 
                     <div className='flex justify-between'>
@@ -151,16 +154,13 @@ const EditSale = () => {
                                         label="Customer"
                                         id="customer"
                                         required
-                                        // this logic helps from warning(MUI), on intially render when there is not id
-                                        value={selectedCustomer?.customerId ?  selectedCustomer?.customerId : (selectedCustomer?._id ?? '')}
-                                        onChange={(e) => {                                         
-                                            setSelectedCustomer(customers.find(customer => customer._id === e.target.value))
-                                        }}
+                                        value={selectedCustomer}
+                                        onChange={(e) => setSelectedCustomer(e.target.value)}
                                     >
+                                        {/* <MenuItem value="" disabled>Select an customer</MenuItem> */}
                                         {
-                                            // create a new array => because sort change the actual array  and we can't directly change the redux variable/state =>  so getting error 
-                                            [...customers].sort(customSort('name')).map(customer => {
-                                                return <MenuItem key={customer?._id} value={customer._id}>{customer?.name}</MenuItem>
+                                            customersList.map(customer => {
+                                                return <MenuItem key={customer?._id} value={customer}>{customer?.name}</MenuItem>
                                             })
                                         }
                                     </Select>
@@ -205,9 +205,9 @@ const EditSale = () => {
                         {/* date and invoice no. */}
                         <div>
 
-                            <p className='text-lg'>Date : <span className='text-xl font-semibold'>{formattedDate(saleData.createdAt)}</span></p>
+                            <p className='text-lg'>Date : <span className='text-xl font-semibold'>{formattedDate(Date.now())}</span></p>
 
-                            <p className='text-lg'>Invoice no. : <span className='text-xl font-semibold'> {saleData.invoiceNo} </span> </p>
+                            <p className='text-lg'>Invoice no. : <span className='text-xl font-semibold'> {invoiceNo} </span> </p>
                         </div>
 
                     </div>
@@ -332,8 +332,8 @@ const EditSale = () => {
 
 
                 <div className='my-4 flex gap-4'>
-                    <Button variant="contained" onClick={editHandler} color="error">Edit</Button>
-                    <Button variant="contained" onClick={() => navigate(-1)} >Cancle</Button>
+                    <Button variant="contained" onClick={submitHandler}>Submit</Button>
+                    <Button variant="contained" onClick={resetHandler} color="error">Reset</Button>
                 </div>
 
 
@@ -344,4 +344,4 @@ const EditSale = () => {
     )
 }
 
-export default EditSale;
+export default Invoice;

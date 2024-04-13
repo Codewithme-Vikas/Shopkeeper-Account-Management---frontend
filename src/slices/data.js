@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const dataSlice = createSlice({
-    name: 'customer',
+    name: 'data',
     initialState: {
         customers: [],
         products: [],

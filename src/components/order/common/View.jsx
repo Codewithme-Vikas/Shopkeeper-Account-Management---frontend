@@ -3,13 +3,13 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 
 import { Button } from '@mui/material'
 
-import FormLogo from '../common/FormLogo';
+import FormLogo from '../../common/FormLogo';
 
-import { fetchSale } from '../../services/sale';
-import { formattedDate } from '../../utils/helper';
+import { fetchSale } from '../../../services/order';
+import { formattedDate } from '../../../utils/helper';
 import ProductTable from './ProductTable';
 
-const SaleView = () => {
+const View = ({ type }) => {
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -30,11 +30,11 @@ const SaleView = () => {
             <div id='printable-content' className='py-4 px-6  border-2  border-slate-400 shadow-xl rounded-md'>
 
 
-                <FormLogo />
+                <FormLogo title={type} />
 
                 {/* START : ************ Customer Data, Date , Invoice No. ************* */}
                 <div className='mb-2'>
-                    <p className='text-lg font-medium mb-2'>Billed To :</p>
+                    <p className='text-lg font-medium mb-2'>{ type === 'sale' ? 'Billed To ' : 'Buy From '} :</p>
 
 
                     <div className='flex justify-between'>
@@ -173,16 +173,17 @@ const SaleView = () => {
 
             <div id='saleView-buttons' className='my-4 flex gap-4'>
 
-                <Link to={`/sale/${id}/edit`}>
+                <Link to={`/${type}/${id}/edit`}>
                     <Button variant="contained" >Edit</Button>
                 </Link>
 
 
-                <Link to={'/report/sale'}>
+                <Link to={`/report/${type}`}>
                     <Button variant="contained">Sales Report</Button>
                 </Link>
 
                 <Button variant="contained" onClick={handlePrint}>Print</Button>
+
                 <Button variant="contained" className='bg-green-600'>Whatshapp</Button>
 
                 <Button variant="contained" onClick={() => navigate(-1)}>Go Back</Button>
@@ -193,5 +194,5 @@ const SaleView = () => {
     )
 }
 
-export default SaleView;
+export default View;
 

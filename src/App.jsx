@@ -6,7 +6,10 @@ import Navbar from './components/common/Navbar'
 import ErrorPage from './components/common/ErrorPage'
 import Body from './components/Body'
 
-import SaleInvoice from './components/sale/SaleInvoice'
+// import SaleInvoice from './components/sale/SaleInvoice'
+import SaleInvoice from './components/order/invoice/SaleInvoice';
+import PurchaseInvoice from './components/order/invoice/PurchaseInvoice';
+
 import Customer from './components/customer/Customer'
 import Product from './components/product/Product'
 import Home from './components/Home'
@@ -15,9 +18,15 @@ import CustomerView from './components/customer/CustomerView'
 import CustomerReport from './components/reports/CustomerReport'
 import ProductReport from './components/reports/ProductReport'
 import SaleReport from './components/reports/SaleReport'
-import SaleView from './components/sale/SaleView'
-import EditSale from './components/sale/EditSale'
-import Payment from './components/payment/Payment'
+// import SaleView from './components/sale/SaleView'
+import SaleView from './components/order/view/SaleView'
+import PurchaseView from './components/order/view/PurchaseView'
+// import EditSale from './components/sale/EditSale'
+import EditSale from './components/order/edit/EditSale';
+import EditPurchase from './components/order/edit/EditPurchase';
+// import Payment from './components/payment/Payment'
+import SaleReceived from './components/order/payment/SaleReceived'
+import PurchasePayment from './components/order/payment/PurchasePayment'
 
 const router = createBrowserRouter([
     {
@@ -42,16 +51,28 @@ const router = createBrowserRouter([
                 element : <Product/>
             },
             {
-                path: "sale",
+                path: "sale/invoice",
                 element: <SaleInvoice />
+            },
+            {
+                path: "purchase/invoice",
+                element: <PurchaseInvoice />
             },
             {
                 path : 'sale/:id',
                 element : <SaleView/>
             },
             {
+                path : 'purchase/:id',
+                element : <PurchaseView/>
+            },
+            {
                 path : 'sale/:id/edit',
                 element : <EditSale/>
+            },
+            {
+                path : 'purchase/:id/edit',
+                element : <EditPurchase/>
             },
             {
                 path : 'report/customer',
@@ -70,13 +91,13 @@ const router = createBrowserRouter([
                 element : <SaleReport/>
             },
             {
-                path : 'payment',
-                element : <Payment/>
+                path : 'sale/received',
+                element : <SaleReceived/>
             },
             {
                 
-                path : 'received',
-                element : <Payment/>
+                path : 'purchase/payment',
+                element : <PurchasePayment/>
             }
         ]
     }
