@@ -17,6 +17,7 @@ import ProductReport from './components/reports/ProductReport'
 import SaleReport from './components/reports/SaleReport'
 import SaleView from './components/sale/SaleView'
 import EditSale from './components/sale/EditSale'
+import Payment from './components/payment/Payment'
 
 const router = createBrowserRouter([
     {
@@ -64,6 +65,19 @@ const router = createBrowserRouter([
                 path : 'report/sale',
                 element : <SaleReport/>
             },
+            {
+                path : 'report/purchase',
+                element : <SaleReport/>
+            },
+            {
+                path : 'payment',
+                element : <Payment/>
+            },
+            {
+                
+                path : 'received',
+                element : <Payment/>
+            }
         ]
     }
 ]);

@@ -13,7 +13,7 @@ const Navbar = () => {
     }
 
     return (
-        <nav className='p-4 px-6 shadow-md flex justify-between'>
+        <nav id='navbar' className='p-4 px-6 sticky top-0 z-[10000] bg-white shadow-lg flex justify-between'>
 
             <div className='flex gap-1 items-center'>
                 <img alt='Icon' src='' className='w-10' />

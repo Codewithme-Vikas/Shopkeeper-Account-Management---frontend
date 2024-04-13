@@ -30,7 +30,7 @@ export default function ControlledAccordions() {
                     <div className='flex flex-col gap-2'>
                         <Link to='/sale'>Sale Invoice</Link>
                         <p>Edit Sale</p>
-                        <p>Received</p>
+                        <Link to='/received'>Received</Link>
                     </div>
                 </AccordionDetails>
             </Accordion>
@@ -67,7 +67,7 @@ export default function ControlledAccordions() {
                     <div className='flex flex-col gap-2'>
                         <a href=''>Purchase Entry</a>
                         <a href=''>Edit Purchase</a>
-                        <a href=''>Payment</a>
+                        <Link to='/payment'>Payment</Link>
                     </div>
                 </AccordionDetails>
             </Accordion>
@@ -85,6 +85,7 @@ export default function ControlledAccordions() {
                         <Link to={'/report/customer'}>Customer Reports</Link>
                         <Link to='/report/product'>Product Reports</Link>
                         <Link to='/report/sale'>Sale Reports</Link>
+                        <Link to='/report/purchase'>Purchase Reports</Link>
                     </div>
                 </AccordionDetails>
             </Accordion>

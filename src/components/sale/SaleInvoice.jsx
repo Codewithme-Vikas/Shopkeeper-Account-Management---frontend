@@ -9,7 +9,7 @@ import BasicModel from '../helper/BasicModal';
 import SelectProduct from './SelectProduct'
 
 import { CGST_RATES, IGST_RATES, SGST_RATES } from '../../utils/constants';
-import { customSort, formattedDate, getSum } from '../../utils/helper'
+import { customSort, formattedDate, getSum, sendWhatshappMsg } from '../../utils/helper'
 import { totalNoOfOrders } from '../../services/sale';
 import { apiConnector } from "../../utils/apiConnector"
 import { CREATE_ORDER, GET_ALL_CUSTOMERS, GET_ALL_PRODUCTS } from '../../utils/APIs';
@@ -99,9 +99,10 @@ const SaleInvoice = () => {
                 note: note
             }
 
-            await apiConnector(CREATE_ORDER, 'POST', orderData)
+            const {orderDoc} = await apiConnector(CREATE_ORDER, 'POST', orderData)
             toast.success('Sale add successfully');
 
+            sendWhatshappMsg(orderDoc);
             dispatch(increaseSellOrders());
 
             // reset all the state values

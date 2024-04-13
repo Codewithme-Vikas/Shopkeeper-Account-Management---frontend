@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 
 import { apiConnector } from "../utils/apiConnector";
-import { GET_ALL_CUSTOMERS } from "../utils/APIs";
+import { GET_ALL_CUSTOMERS, GET_CUSTOMER_CREDIT } from "../utils/APIs";
 import { addCustomers } from "../slices/data";
 
 export function fetchCustomers() {
@@ -19,5 +19,16 @@ export function fetchCustomers() {
         }
 
         toast.dismiss(toastId)
+    }
+};
+
+
+export async function fetchCustomerCredit( customerId,setBalance){
+    try {
+        const { balance } = await apiConnector( GET_CUSTOMER_CREDIT + customerId);
+        setBalance( balance );
+    } catch (error) {
+        console.log("GET CUSTOMER CERDIT, API ERROR............", error)
+        toast.error(error.message)
     }
 };

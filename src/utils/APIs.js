@@ -24,6 +24,7 @@ export const LOGIN = BASE_URL + 'auth/login';
 
 
 // Order endpoints
+export const GET_ALL_ORDERS = BASE_URL + 'order/getAllOrders';
 export const GET_ALL_SELL_ORDERS = BASE_URL + 'order/getAllSellOrders';
 export const GET_ALL_BUY_ORDERS = BASE_URL + 'order/getAllBuyOrders';
 
@@ -31,3 +32,8 @@ export const CREATE_ORDER = BASE_URL + 'order/create';
 export const EDIT_ORDER = BASE_URL + 'order/update';
 
 export const GET_ORDER = BASE_URL + 'order/getOrder/';
+
+// Payment endpoints
+export const CREATE_PAYMENT = BASE_URL + 'payment/payment';
+
+export const GET_CUSTOMER_CREDIT = BASE_URL + 'payment/cutomerCredit/';

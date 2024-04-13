@@ -31,7 +31,8 @@ const columns = [
         name: "email",
         label: "email",
         options: {
-            customBodyRender: (value) => value ? value : '__'
+            customBodyRender: (value) => value ? value : '__',
+            display : false,
         }
     },
     {
@@ -107,7 +108,8 @@ const CustomerList = () => {
                 data={customersList}
                 columns={columns}
                 options={options}
-                className='w-[1130px] '
+                className='w-full'
+                
             />
         </div>
     )

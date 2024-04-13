@@ -74,7 +74,7 @@ const ProductList = () => {
                 data={productsList}
                 columns={columns}
                 options={options}
-                className='w-[1130px] '
+                className='w-full'
             />
         </div>
     )

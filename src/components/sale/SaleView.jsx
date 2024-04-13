@@ -7,13 +7,18 @@ import FormLogo from '../common/FormLogo';
 
 import { fetchSale } from '../../services/sale';
 import { formattedDate } from '../../utils/helper';
-import ProductTable from '../../../del/ProductTable';
+import ProductTable from './ProductTable';
 
 const SaleView = () => {
 
     const { id } = useParams();
     const navigate = useNavigate();
     const [saleData, setSaleData] = useState('');
+
+
+    function handlePrint() {
+        window.print();
+    }
 
     useEffect(() => {
         fetchSale(id, setSaleData);
@@ -22,7 +27,7 @@ const SaleView = () => {
     return !saleData ? 'Loading...' : (
         <div>
 
-            <div className='py-4 px-6  border-2  border-slate-400 shadow-xl rounded-md'>
+            <div id='printable-content' className='py-4 px-6  border-2  border-slate-400 shadow-xl rounded-md'>
 
 
                 <FormLogo />
@@ -93,7 +98,7 @@ const SaleView = () => {
                     {/* <p className='text-lg font-medium mb-2'>Product List :</p> */}
 
                     {/* <SelectProduct products={saleData?.products} /> */}
-                    <ProductTable selectedProducts={saleData?.products} />
+                    <ProductTable products={saleData?.products} />
                 </div>
                 {/* END : ******************* Product Option **************************  */}
 
@@ -112,7 +117,7 @@ const SaleView = () => {
                             {/* discount */}
                             {
                                 saleData.discount > 0 && (
-                                    <p>Discount : <span>{saleData.discount} %</span></p>
+                                    <p>Discount : <span>{saleData.discount} ₹</span></p>
                                 )
                             }
 
@@ -138,7 +143,7 @@ const SaleView = () => {
                                 )
                             }
 
-                            <p>Total Amount : <span>{saleData?.orderPrice}</span></p>
+                            <p>Total Amount : <span>{saleData?.orderPrice} ₹</span></p>
 
                         </div>
                     </div>
@@ -161,19 +166,26 @@ const SaleView = () => {
                 {/* END : *******************discount, GST,Advance,totalAmount,note****************  */}
 
 
-                <div className='my-4 flex gap-4'>
-                    <Link to={`/sale/${id}/edit`}>
-                        <Button variant="contained" >Edit</Button>
-                    </Link>
-                    <Button variant="contained">Print</Button>
-                    <Link to={'/report/sale'}>
-                        <Button variant="contained">Sales Report</Button>
-                    </Link>
-                    <Button variant="contained">Whatshapp</Button>
-                    <Button variant="contained" onClick={()=> navigate(-1)}>Go Back</Button>
-                </div>
 
 
+
+            </div>
+
+            <div id='saleView-buttons' className='my-4 flex gap-4'>
+
+                <Link to={`/sale/${id}/edit`}>
+                    <Button variant="contained" >Edit</Button>
+                </Link>
+
+
+                <Link to={'/report/sale'}>
+                    <Button variant="contained">Sales Report</Button>
+                </Link>
+
+                <Button variant="contained" onClick={handlePrint}>Print</Button>
+                <Button variant="contained" className='bg-green-600'>Whatshapp</Button>
+
+                <Button variant="contained" onClick={() => navigate(-1)}>Go Back</Button>
             </div>
 
 

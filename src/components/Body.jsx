@@ -7,9 +7,9 @@ import SideBar from './common/SideBar'
 
 const Body = () => {
     return (
-        <div className='flex gap-2'>
+        <div className='flex gap-2 mt-3'>
 
-            <div className='min-h-screen p-4 shadow-md'>
+            <div  id='sidebar' className='min-h-screen p-4 shadow-md'>
                 <SideBar />
             </div>
 
