@@ -9,9 +9,9 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: 800,
     bgcolor: 'background.paper',
-    border: '2px solid #000',
+    borderRadius : '.5rem',
     boxShadow: 24,
     p: 4,
 };
@@ -35,7 +35,7 @@ export default function BasicModal() {
             >
                 <Box component="div" sx={style} >
                 
-                    <Typography>Add Customer</Typography>
+                    <Typography sx={{margin : '0 0 10px 0'}}>Add Customer</Typography>
                     
                     <CustomerForm/>
                 
