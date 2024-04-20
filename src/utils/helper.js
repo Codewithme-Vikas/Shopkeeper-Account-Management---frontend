@@ -61,11 +61,16 @@ export const productAmount = (product) => {
 // ************************ Send Message **************************
 export const sendWhatshappMsg = (saleData) => {
     const { customer, note, orderPrice, createdAt, products, discount, advance, type } = saleData;
-    console.log( type , 'whats')
+
     function generateMsg() {
         // Create a message template
         let msg = `Hi ${customer.name},\n\n`;
-        msg += `Thank you for your order. Here are the details:\n\n`;
+
+        if( type === 'Sell'){
+            msg += `Thank you for your order. Here are the details:\n\n`;
+        }else{
+            msg += `Thank you for our order conformation. Here are the details:\n\n`;
+        }
 
         // Loop through each product and add its details to the message
         products.forEach((product, index) => {
@@ -97,6 +102,8 @@ export const sendWhatshappMsg = (saleData) => {
         if (note) {
             msg += `Note: ${note}\n`;
         }
+
+        msg += '\n\nBest Wishes from Ritik Adversting.\n'
 
         // Add any other relevant details or closing remarks to the message
 

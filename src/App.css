@@ -10,6 +10,17 @@
     border: 2px solid black;
 }
 
+/* ************** Style for Link tag elements******************** */
+a{
+    text-decoration: none;
+    color: black;
+}
+
+a:hover{
+    text-decoration: underline;
+}
+/* ************** Style for Link tag elements******************** */
+
 
 @media print {
 

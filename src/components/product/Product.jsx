@@ -8,7 +8,7 @@ const Product = () => {
 
             <div className='shadow-lg'>
 
-                <h2 className='text-xl text-center font-medium'>Customer Form</h2>
+                <h2 className='text-xl text-center font-medium'>Product Form</h2>
 
                 <ProductForm />
 

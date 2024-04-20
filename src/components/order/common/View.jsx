@@ -6,7 +6,7 @@ import { Button } from '@mui/material'
 import FormLogo from '../../common/FormLogo';
 
 import { fetchSale } from '../../../services/order';
-import { formattedDate } from '../../../utils/helper';
+import { formattedDate, sendWhatshappMsg } from '../../../utils/helper';
 import ProductTable from './ProductTable';
 
 const View = ({ type }) => {
@@ -34,7 +34,7 @@ const View = ({ type }) => {
 
                 {/* START : ************ Customer Data, Date , Invoice No. ************* */}
                 <div className='mb-2'>
-                    <p className='text-lg font-medium mb-2'>{ type === 'sale' ? 'Billed To ' : 'Buy From '} :</p>
+                    <p className='text-lg font-medium mb-2'>{type === 'sale' ? 'Billed To ' : 'Buy From '} :</p>
 
 
                     <div className='flex justify-between'>
@@ -184,7 +184,7 @@ const View = ({ type }) => {
 
                 <Button variant="contained" onClick={handlePrint}>Print</Button>
 
-                <Button variant="contained" className='bg-green-600'>Whatshapp</Button>
+                <Button variant="contained"  onClick={() => sendWhatshappMsg(saleData)} className='bg-green-600'>Whatshapp</Button>
 
                 <Button variant="contained" onClick={() => navigate(-1)}>Go Back</Button>
             </div>

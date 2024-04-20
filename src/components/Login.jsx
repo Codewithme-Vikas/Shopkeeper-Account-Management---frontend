@@ -19,7 +19,7 @@ const Login = () => {
     }
 
     return (
-        <div className='p-2'>
+        <div className='p-4 my-8 mt-12 shadow shadow-orange-600 rounded-xl'>
 
             <h1 className='text-2xl font-bold text-center'>Login</h1>
 

@@ -41,14 +41,14 @@ export default function ControlledAccordions() {
                     aria-controls="panel2bh-content"
                     id="panel2bh-header"
                 >
-                    <h3 className='font-bold text-lg'>Master</h3>
+                    <h3 className='font-bold text-lg'>Add</h3>
 
                 </AccordionSummary>
                 <AccordionDetails>
                     <div className='flex flex-col gap-2'>
 
-                        <Link to={"/customer"}>ADD Customer</Link>
-                        <Link to={"/product"}>ADD Product</Link>
+                        <Link to={"/customer"}>Customer</Link>
+                        <Link to={"/product"}>Product</Link>
                         
 
                     </div>
@@ -82,10 +82,10 @@ export default function ControlledAccordions() {
                 </AccordionSummary>
                 <AccordionDetails>
                     <div className='flex flex-col gap-4'>
-                        <Link to={'/report/customer'}>Customer Reports</Link>
-                        <Link to='/report/product'>Product Reports</Link>
-                        <Link to='/report/sale'>Sale Reports</Link>
-                        <Link to='/report/purchase'>Purchase Reports</Link>
+                        <Link to={'/report/customer'}>Customers</Link>
+                        <Link to='/report/product'>Products</Link>
+                        <Link to='/report/sale'>Sales</Link>
+                        <Link to='/report/purchase'>Purchases</Link>
                     </div>
                 </AccordionDetails>
             </Accordion>

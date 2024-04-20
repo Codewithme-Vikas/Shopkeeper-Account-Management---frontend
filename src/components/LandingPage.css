@@ -1,0 +1,19 @@
+#landingPage{
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+
+}
+
+
+li{
+    list-style: none;
+}
+
+a{
+    text-decoration: none !important;
+    font-size: 16px;
+}
+
+a:hover{
+    text-decoration: underline !important;
+}
