@@ -15,16 +15,17 @@ import Product from './components/product/Product'
 import Home from './components/Home'
 import LandingPage from './components/LandingPage'
 import CustomerView from './components/customer/CustomerView'
+
 import CustomerReport from './components/reports/CustomerReport'
 import ProductReport from './components/reports/ProductReport'
 import SaleReport from './components/reports/SaleReport'
-// import SaleView from './components/sale/SaleView'
+
 import SaleView from './components/order/view/SaleView'
 import PurchaseView from './components/order/view/PurchaseView'
-// import EditSale from './components/sale/EditSale'
+
 import EditSale from './components/order/edit/EditSale';
 import EditPurchase from './components/order/edit/EditPurchase';
-// import Payment from './components/payment/Payment'
+
 import SaleReceived from './components/order/payment/SaleReceived'
 import PurchasePayment from './components/order/payment/PurchasePayment'
 
@@ -98,7 +99,7 @@ const router = createBrowserRouter([
                 
                 path : 'purchase/payment',
                 element : <PurchasePayment/>
-            }
+            },
         ]
     }
 ]);

@@ -1,21 +1,21 @@
 import React, { useState } from 'react'
 import { TextField, Button } from '@mui/material'
 import { useDispatch } from 'react-redux';
-import { login } from '..//services/auth';
+import { login } from '../../services/auth';
 
-const Login = () => {
+const Login = ({ setResetPassword }) => {
     const dispatch = useDispatch()
 
-    
+
 
     async function loginHandler(e) {
         e.preventDefault();
 
         const formData = new FormData(e.target);
-        const data = Object.fromEntries( formData );
+        const data = Object.fromEntries(formData);
 
-        dispatch(login(data.name,data.password))
-        
+        dispatch(login(data.name, data.password))
+
     }
 
     return (
@@ -27,10 +27,13 @@ const Login = () => {
 
 
                 <div className='flex gap-4'>
-                    <TextField fullWidth id="name" name='name' label="Name" type='text' required/>
-                    <TextField fullWidth id="password" name='password' label="Password" type="password" required/>
+                    <TextField fullWidth id="name" name='name' label="Name" type='text' required />
+                    <TextField fullWidth id="password" name='password' label="Password" type="password" required />
                 </div>
 
+                <div>
+                    <Button size='small' className='capitalize hover:underline' onClick={()=> setResetPassword(true)}>forget password?</Button>
+                </div>
 
                 <div>
                     <Button variant="contained" type='submit'>Login</Button>

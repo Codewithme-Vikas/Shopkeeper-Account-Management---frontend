@@ -1,35 +1,26 @@
+import { useState } from 'react';
 import './LandingPage.css'
 
-import Login from './Login'
 
+import Login from './auth/Login'
+import ResetPassword from './auth/ResetPassword';
 import Carousel from "../components/helper/Crousel";
 
 // images
 import logo from "../assets/logo.png"
+import { imgs } from '../utils/constants';
 
 import canonPrinter from '../assets/crouselmage/canonPrinter.jpg'
 import ecoMachine from '../assets/crouselmage/ecoMachine.jpg'
 import flexMachine from '../assets/crouselmage/flexMachine.jpeg'
 
+
 const MAP_API_KEY = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 
-const imgs = [
-    "hodingFlex-d1c863d1_aihnx1.png",
-    "stickers-f1c72e75_h8nt10.png",
-    "envelopes-7a0199c5_qyaezn.png",
-    "standy-201b66ef_j5imuj.png",
-    "3dBoard-1528a010_vg34to.png",
-    "laterHead-74d8d13e_xlyp28.png",
-    "billBook-94423608_p9rb3b.png",
-    "canopy-25ec1517_sziimr.png",
-    "pamplet-1d28ad67_nnkb99.png",
-    "visitingCard-b6b38756_mutaxy.png",
-    "backLight-e844fd1e_yei077.png",
-    "tShirt-729c4c96_th7lph.png"
-]
-
 const LandingPage = () => {
-    return (
+    const [ resetPassword, setResetPassword ] = useState(false);
+
+    return resetPassword ? <ResetPassword setResetPassword={setResetPassword}/> :  (
         <div id='landingPage'>
 
             <header className="shadow-slate-300 shadow-lg mb-2 py-2">
@@ -109,7 +100,7 @@ const LandingPage = () => {
 
             <section id="login" className="w-10/12 mx-auto my-4 ">
 
-                <Login />
+                <Login setResetPassword={setResetPassword}/>
 
             </section>
 

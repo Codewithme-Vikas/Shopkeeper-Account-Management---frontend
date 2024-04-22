@@ -22,6 +22,12 @@ export const UPDATE_CUSTOMER = BASE_URL + 'customer/update';
 // Authentication endpoints
 export const LOGIN = BASE_URL + 'auth/login';
 
+export const RESET_PASSWORD_OTP = BASE_URL + 'auth/resetPasswordOTP';
+
+export const VERIFY_OTP = BASE_URL + 'auth/verifyOTP';
+
+export const RESET_PASSWORD = BASE_URL + 'auth/resetPassword';
+
 
 // Order endpoints
 export const GET_ALL_ORDERS = BASE_URL + 'order/getAllOrders';
