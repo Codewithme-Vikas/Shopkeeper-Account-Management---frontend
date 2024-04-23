@@ -1,4 +1,5 @@
-const BASE_URL = import.meta.env.VITE_BASE_URL + '/api/v1/'
+const URL = import.meta.env.VITE_BASE_URL ;
+const BASE_URL = URL + '/api/v1/';
 
 // Product endpoints
 export const GET_ALL_PRODUCTS = BASE_URL + 'product/getAllProducts';
