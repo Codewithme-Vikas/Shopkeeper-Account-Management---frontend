@@ -39,23 +39,37 @@ export const customSort = (field) => {
     }
 };
 
-export const customFilter = (field,value)=>{
-    return (item)=>{
+export const customFilter = (field, value) => {
+    return (item) => {
         return item[field] === value;
     }
 }
 
 
+// use for the get to know the total area of the product
+export const productTotalArea = (height,width, quantity) => {
+    
+    let area = height * width * quantity;
+    if( area <= 0){
+        return "__"
+    }
+    return area.toFixed(2);
+};
+
+
 // use for the get to know the amount of the product
 export const productAmount = (product) => {
     // Check if both height and width properties exist
+    let amount = 0;
     if (product.height && product.width) {
         // Calculate and add the total area to the accumulator
-        return (product.height * product.width * product.quantity * product.price);
+        amount = (product.height * product.width * product.quantity * product.price);
     } else {
         // If height or width is missing, calculate total based on quantity and price only
-        return (product.quantity * product.price);
+        amount = (product.quantity * product.price);
     }
+
+    return Math.round(amount);
 };
 
 // ************************ Send Message **************************
@@ -66,9 +80,9 @@ export const sendWhatshappMsg = (saleData) => {
         // Create a message template
         let msg = `Hi ${customer.name},\n\n`;
 
-        if( type === 'Sell'){
+        if (type === 'Sell') {
             msg += `Thank you for your order. Here are the details:\n\n`;
-        }else{
+        } else {
             msg += `Thank you for our order conformation. Here are the details:\n\n`;
         }
 
@@ -86,8 +100,8 @@ export const sendWhatshappMsg = (saleData) => {
         });
 
         // Add additional details like total price, order date, and note
-        
-        msg+= `\n`;
+
+        msg += `\n`;
 
         if (discount) {
             msg += `Discount: ${discount} ₹\n`;
@@ -112,7 +126,7 @@ export const sendWhatshappMsg = (saleData) => {
         return msg;
     }
 
-    const text = encodeURIComponent( generateMsg() );
+    const text = encodeURIComponent(generateMsg());
 
     // send msg by link
     window.open(`https://wa.me/${customer.phone}?text=${text}`, '_blank')

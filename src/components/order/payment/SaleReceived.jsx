@@ -3,7 +3,7 @@ import Payment from '../common/Payment'
 const SaleReceived = () => {
   return (
     <>
-        <Payment type='sale'/>
+        <Payment type='Received'/>
     </>
   )
 }

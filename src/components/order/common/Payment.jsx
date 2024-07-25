@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { Button, TextField, InputLabel, Select, MenuItem, FormControl } from '@mui/material'
 
 import { fetchCustomers, fetchCustomerCredit } from '../../../services/customer';
-import { customFilter, customSort } from '../../../utils/helper';
+import { customSort } from '../../../utils/helper';
 import { apiConnector } from '../../../utils/apiConnector';
 import { CREATE_PAYMENT } from '../../../utils/APIs';
 
@@ -17,7 +17,8 @@ const Payment = ({type}) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const customerList = customers.filter(customFilter('accountType', type === 'sale' ? 'Buyer' : 'Seller')).sort(customSort('name'))
+    // always create a copy of actual RTK state to manipulate it. [ can't directly manipulate]
+    const customerList = [...customers].sort(customSort('name'))
 
     // to show user balance/credit <-- inhance User experience
     const [balance, setBalance] = useState('');
@@ -41,7 +42,7 @@ const Payment = ({type}) => {
 
         // Data for API
         const paymentData = {
-            type : type === 'sale' ? 'Received' : 'Payment',
+            type : type ,
             amount,
             note,
             customer: {
@@ -53,7 +54,7 @@ const Payment = ({type}) => {
 
         try {
             await apiConnector(CREATE_PAYMENT, 'POST', paymentData);
-            toast.success(`${ type === 'sale' ? 'Received ' : 'Payment'} successfully!`);
+            toast.success(`${ type } successfully!`);
 
             resetStates();
 
@@ -86,7 +87,7 @@ const Payment = ({type}) => {
     return (
         <div className='px-4'>
 
-            <p className='text-3xl my-2 font-bold'>{type === 'sale' ? 'Received' : 'Payment'}</p>
+            <p className='text-3xl my-2 font-bold'>{type }</p>
 
             <div className='flex justify-between '>
 
@@ -122,7 +123,7 @@ const Payment = ({type}) => {
 
 
                     <div className='my-2 flex gap-4'>
-                        <Button variant="contained" onClick={paymentHandler}>{type === 'sale' ? 'Received' : 'Payment'}</Button>
+                        <Button variant="contained" onClick={paymentHandler}>{type}</Button>
                         <Button variant="contained" onClick={() => navigate(-1)}>Go back</Button>
                     </div>
 

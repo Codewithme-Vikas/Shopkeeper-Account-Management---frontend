@@ -25,7 +25,7 @@ const Invoice = ({ type }) => {
     const dispatch = useDispatch();
 
     // filter out appropriate customers and  sort in alphabetic manner
-    const customersList = [...customers].filter(customFilter('accountType' , type === 'sale' ? 'Buyer' : 'Seller' )).sort(customSort('name'));
+    const customersList = [...customers].sort(customSort('name'));
     
     // ****************** Form/API data - Start**********************
     const invoiceNo = type === 'sale' ? (totalSellOrders + 1) : (totalBuyOrders + 1);
@@ -44,7 +44,7 @@ const Invoice = ({ type }) => {
     // amount after discount
     const discountAmount = productsAmount - discount;
     // amount after tax
-    const totalAmount = discountAmount + (discountAmount * (CGST + SGST + IGST)) / 100;
+    const totalAmount = Math.round(discountAmount + (discountAmount * (CGST + SGST + IGST)) / 100);
 
     // ******************Form/API Data - End **********************
 
@@ -77,7 +77,6 @@ const Invoice = ({ type }) => {
                     address: selectedCustomer.address,
                     GSTNumber: selectedCustomer.GSTNumber,
                     PAN: selectedCustomer.PAN,
-                    accountType: selectedCustomer.accountType
                 },
                 type: type === 'sale' ? 'Sell' : 'Buy',
                 invoiceNo: invoiceNo,
@@ -89,10 +88,10 @@ const Invoice = ({ type }) => {
                 note: note
             }
 
-            const {orderDoc} = await apiConnector(CREATE_ORDER, 'POST', orderData)
+            await apiConnector(CREATE_ORDER, 'POST', orderData)
             toast.success(`${type} add successfully`);
 
-            sendWhatshappMsg(orderDoc);
+            // sendWhatshappMsg(orderDoc);
 
             if( type === 'sale'){
                 dispatch(increaseSellOrders());

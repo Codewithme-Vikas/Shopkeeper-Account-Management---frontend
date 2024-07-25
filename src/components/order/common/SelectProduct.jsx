@@ -5,7 +5,7 @@ import { TextField, Select, MenuItem, IconButton } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 
-import { productAmount } from '../../../utils/helper';
+import { productAmount, productTotalArea } from '../../../utils/helper';
 
 const SelectProduct = ({ products, selectedProducts, setSelectedProducts }) => {
 
@@ -19,8 +19,9 @@ const SelectProduct = ({ products, selectedProducts, setSelectedProducts }) => {
     const [price, setPrice] = useState('');
     const [note, setNote] = useState('');
 
-    const amount = (selectedProduct.unit !== 'PCS' && width && height) ? height * width * quantity * price : quantity * price;
-
+    // const amount = (selectedProduct.unit !== 'PCS' && width && height) ? height * width * quantity * price : quantity * price;
+    let amount = (width && height) ? height * width * quantity * price : quantity * price;
+    amount = Math.round( amount );
 
     function addProductHandler() {
 
@@ -29,10 +30,6 @@ const SelectProduct = ({ products, selectedProducts, setSelectedProducts }) => {
             return toast.error('Select a product')
         } else if (Number(amount) <= 0) {
             return toast.error('Please enter valid amount')
-        } else if (selectedProduct.unit === 'PCS' && (width || height)) {
-            return toast.error("Don't specify Height and width");
-        } else if (selectedProduct.unit !== 'PCS' && (!width || !height)) {
-            return toast.error('Provide both Height and Width')
         }
 
 
@@ -47,8 +44,12 @@ const SelectProduct = ({ products, selectedProducts, setSelectedProducts }) => {
             note,
         }
 
+        
+        console.log( amount , "amount is ")
+
         setSelectedProducts(prev => ([...prev, product]))
 
+        // reset all states
         setSelectedProduct('');
         setHeight('');
         setWidth('');
@@ -77,8 +78,8 @@ const SelectProduct = ({ products, selectedProducts, setSelectedProducts }) => {
                             <th className='border border-slate-600 p-2'>Product Name</th>
                             <th className='border border-slate-600 p-2'>Height</th>
                             <th className='border border-slate-600 p-2'>Width</th>
-                            <th className='border border-slate-600 p-2'>Area</th>
                             <th className='border border-slate-600 p-2'>Quantity</th>
+                            <th className='border border-slate-600 p-2'>Total Area</th>
                             <th className='border border-slate-600 p-2'>Price</th>
                             <th className='border border-slate-600 p-2'>Amount</th>
                             <th className='border border-slate-600 p-2'>Note</th>
@@ -89,7 +90,7 @@ const SelectProduct = ({ products, selectedProducts, setSelectedProducts }) => {
 
                     <tbody>
 
-
+                        {/* Selected products are listed here */}
                         {
                             selectedProducts.map((product, index) => {
                                 return <tr key={index}>
@@ -97,8 +98,12 @@ const SelectProduct = ({ products, selectedProducts, setSelectedProducts }) => {
                                     <td className='border border-slate-600 p-2 min-w-36'>{product.productName}</td>
                                     <td className='border border-slate-600 p-2 w-24'>{product.height || '__'}</td>
                                     <td className='border border-slate-600 p-2 w-24'>{product.width || '__'}</td>
-                                    <td className='border border-slate-600 p-2 w-28'>{(product.height * product.width) || '__'}</td>
                                     <td className='border border-slate-600 p-2 w-24'>{product.quantity}</td>
+                                    <td className='border border-slate-600 p-2 w-28'>
+                                        {
+                                            productTotalArea(product.height,product.width,product.quantity) || '__'
+                                        }
+                                    </td>
                                     <td className='border border-slate-600 p-2 w-28'>{product.price}</td>
                                     <td className='border border-slate-600 p-2'>{productAmount(product)}</td>
                                     <td className='border border-slate-600 p-2 max-w-36'>{product.note || '__'}</td>
@@ -129,15 +134,16 @@ const SelectProduct = ({ products, selectedProducts, setSelectedProducts }) => {
                                     onChange={(e) => {
                                         setSelectedProduct(e.target.value)
                                         // To handle :- In worst case : first user select a product and set width and height of it,then select/change product which unit is PCS
-                                        if (e.target.value.unit === 'PCS') {
-                                            setHeight('');
-                                            setWidth('');
-                                        }
+                                        // if (e.target.value.unit === 'PCS') {
+                                        //     setHeight('');
+                                        //     setWidth('');
+                                        // }
                                     }}
                                 >
-                                    {/* <MenuItem value="" disabled>Select an customer</MenuItem> */}
+                                    {/* <MenuItem value="" disabled>Select an product</MenuItem> */}
                                     {
                                         products.map(product => {
+                                            // To Do :- instead of value=product[object], try to us productName or unique id something
                                             return <MenuItem key={product?._id} value={product}>{product?.productName}</MenuItem>
                                         })
                                     }
@@ -149,7 +155,7 @@ const SelectProduct = ({ products, selectedProducts, setSelectedProducts }) => {
                                 <TextField
                                     id="height"
                                     fullWidth
-                                    disabled={selectedProduct.unit === 'PCS'}
+                                    // disabled={selectedProduct.unit === 'PCS'}
                                     value={height}
                                     onChange={(e) => setHeight(e.target.value)}
                                     required
@@ -162,7 +168,7 @@ const SelectProduct = ({ products, selectedProducts, setSelectedProducts }) => {
                                 <TextField
                                     id="width"
                                     fullWidth
-                                    disabled={selectedProduct.unit === 'PCS'}
+                                    // disabled={selectedProduct.unit === 'PCS'}
                                     value={width}
                                     onChange={(e) => setWidth(e.target.value)}
                                     required
@@ -170,10 +176,7 @@ const SelectProduct = ({ products, selectedProducts, setSelectedProducts }) => {
                                 />
                             </td>
 
-                            {/* area */}
-                            <td className='border border-slate-600'>
-                                <TextField fullWidth value={height * width} disabled id="area" type='number' />
-                            </td>
+                           
 
                             {/* quantity */}
                             <td className='border border-slate-600'>
@@ -186,6 +189,12 @@ const SelectProduct = ({ products, selectedProducts, setSelectedProducts }) => {
                                     type="number"
                                 />
                             </td>
+
+                            {/* Total area = height*width*quantity */}
+                            <td className='border border-slate-600'>
+                                <TextField fullWidth value={ productTotalArea(height, width, quantity)} disabled id="area" type='number' />
+                            </td>
+
 
                             {/* price */}
                             <td className='border border-slate-600'>
@@ -203,7 +212,7 @@ const SelectProduct = ({ products, selectedProducts, setSelectedProducts }) => {
                             <td className='border border-slate-600'>
                                 <TextField
                                     fullWidth
-                                    value={amount}
+                                    value={amount.toString()}
                                     disabled
                                     id="amount"
                                     type="number" />

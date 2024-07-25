@@ -15,7 +15,7 @@ const Navbar = () => {
     }
 
     return (
-        <nav id='navbar' className='p-4 px-6 sticky top-0 z-[10000] bg-white shadow-lg flex justify-between'>
+        <nav id='navbar' className='p-4 px-6 sticky top-0 z-[100] bg-white shadow-lg flex justify-between'>
 
             <a href="/" className='hover:no-underline'>
                 <div className='flex gap-1 items-center'>

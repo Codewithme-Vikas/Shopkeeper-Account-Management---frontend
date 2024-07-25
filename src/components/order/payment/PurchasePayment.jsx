@@ -3,9 +3,9 @@ import Payment from '../common/Payment'
 const PurchasePayment = () => {
   return (
     <>
-        <Payment type='purchase'/>
+        <Payment type='Payment'/>
     </>
   )
 }
 
-export default PurchasePayment
+export default PurchasePayment;

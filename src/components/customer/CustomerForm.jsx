@@ -2,14 +2,13 @@ import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import toast from 'react-hot-toast';
 
-import { Button, TextField, InputLabel, Select, MenuItem, Box } from '@mui/material'
+import { Button, TextField,  Box } from '@mui/material'
 import { apiConnector } from '../../utils/apiConnector'
 import { CREATE_CUSTOMER } from '../../utils/APIs';
 import { fetchCustomers } from '../../services/customer';
 
 const CustomerForm = () => {
 
-    const [accountType, setAccountType] = useState('Buyer');
     const dispatch = useDispatch();
 
     async function submitHandler(e) {
@@ -51,22 +50,6 @@ const CustomerForm = () => {
                     <TextField fullWidth id="PAN" name='PAN' label="PAN No." type="text" />
                 </Box>
 
-                {/* account type - buyer or seller */}
-                <Box>
-                    <InputLabel id="accountTypeLabel" className='mb-2'>Customer Type</InputLabel>
-                    <Select
-                        className='w-full'
-                        labelId="accountTypeLabel"
-                        id="demo-simple-select"
-                        value={accountType}
-                        onChange={(e) => setAccountType(e.target.value)}
-                        required
-                        name='accountType'
-                    >
-                        <MenuItem value="Buyer">Buyer</MenuItem>
-                        <MenuItem value="Seller">Seller</MenuItem>
-                    </Select>
-                </Box>
 
                 <div>
                     <Button variant="contained" type='submit'>Submit</Button>

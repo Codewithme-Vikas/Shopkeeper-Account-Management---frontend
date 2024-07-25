@@ -10,7 +10,7 @@ import BasicModel from '../../helper/BasicModal';
 import SelectProduct from './SelectProduct'
 
 import { CGST_RATES, IGST_RATES, SGST_RATES } from '../../../utils/constants';
-import { customSort,customFilter, formattedDate, getSum } from '../../../utils/helper'
+import { customSort, formattedDate, getSum } from '../../../utils/helper'
 import { apiConnector } from "../../../utils/apiConnector"
 import { EDIT_ORDER } from '../../../utils/APIs';
 
@@ -29,7 +29,7 @@ const EditOrder = ({ type }) => {
     const customers = useSelector(store => store.data.customers);
     const products = useSelector(store => store.data.products);
 
-    const customersList = [...customers].filter(customFilter('accountType' , type === 'Sale' ? 'Buyer' : 'Seller' )).sort(customSort('name'));
+    const customersList = [...customers].sort(customSort('name'));
 
     // ***************************** Form/API data ***********************************
     const [selectedCustomer, setSelectedCustomer] = useState({});
@@ -80,7 +80,6 @@ const EditOrder = ({ type }) => {
                     address: selectedCustomer.address,
                     GSTNumber: selectedCustomer.GSTNumber,
                     PAN: selectedCustomer.PAN,
-                    accountType: selectedCustomer.accountType
                 },
                 products: selectedProducts,
                 discount: discount,
