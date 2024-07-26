@@ -60,7 +60,6 @@ const CustomerView = () => {
 
                         <p className='text-base font-medium'>Mob : {customer.phone}</p>
                         <p className='text-base font-medium'>Email : {customer.email || "__"}</p>
-                        <p className='text-base font-medium'>Account Type : {customer.accountType}</p>
                     </div>
 
                     <div className='flex flex-col  items-start gap-2'>
@@ -75,33 +74,7 @@ const CustomerView = () => {
             {/* net balance */}
             <div>
                 <p className='text-xl font-medium'>Balance :
-
-                    {/* if customer is buyer */}
-                    {
-                        customer.accountType === 'Buyer' && (
-                            <>
-                                {
-                                    balance > 0 ?
-                                        <span className='font-bold text-rose-500'>{balance} ₹</span> :
-                                        <span className='font-bold text-green-500'>{Math.abs(balance)} ₹</span>
-                                }
-                            </>
-                        )
-                    }
-
-                    {/* if customer is buyer */}
-                    {
-                        customer.accountType === 'Seller' && (
-                            <>
-                                {
-                                    balance > 0 ?
-                                        <span className='font-bold text-green-500'>{balance} ₹</span> :
-                                        <span className='font-bold text-rose-500'>{Math.abs(balance)} ₹</span>
-                                }
-                            </>
-                        )
-                    }
-
+                    <span className='font-bold text-green-500 mx-1'> {balance} ₹</span>
                 </p>
             </div>
 
@@ -110,7 +83,7 @@ const CustomerView = () => {
 
                 <table className='table-auto border border-slate-500 border-collapse rounded w-full'>
                     <caption className="caption-top text-xl font-bold text-start my-1">
-                    {customer.accountType === 'Buyer' ? 'Sale ' : 'Purchase '} List
+                        {customer.accountType === 'Buyer' ? 'Sale ' : 'Purchase '} List
                     </caption>
                     <thead>
                         <tr>

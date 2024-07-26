@@ -8,6 +8,7 @@ import FormLogo from '../../common/FormLogo';
 import { fetchSale } from '../../../services/order';
 import { formattedDate, sendWhatshappMsg } from '../../../utils/helper';
 import ProductTable from './ProductTable';
+import Signature from "../../../assets/signature.png"
 
 const View = ({ type }) => {
 
@@ -108,7 +109,7 @@ const View = ({ type }) => {
 
                 <div>
 
-
+                    {/* discount,GST and totalAmount */}
                     <div className='flex justify-end my-4'>
 
 
@@ -146,8 +147,11 @@ const View = ({ type }) => {
                             <p>Total Amount : <span>{saleData?.orderPrice} ₹</span></p>
 
                         </div>
+
+
                     </div>
 
+                    {/* advance and note */}
                     <div className='flex flex-col gap-2 items-start'>
                         {
                             saleData.advance > 0 && (
@@ -161,10 +165,28 @@ const View = ({ type }) => {
                             )
                         }
                     </div>
+ 
+
+                    <div className=' flex justify-end my-6'>
+
+                        <div className='relative'>
+                            <p className='italic font-semibold'>Digital Signature</p>
+                            <img src={Signature} alt='Ritik' className='absolute left-0 bottom-2 '></img>
+                        </div>
+                    </div>
 
                 </div>
                 {/* END : *******************discount, GST,Advance,totalAmount,note****************  */}
 
+
+                {/* START : ***************** Digital Signature ***************************** */}
+
+
+
+
+
+
+                {/* END : ***************** Digital Signature ***************************** */}
 
 
 
@@ -184,7 +206,7 @@ const View = ({ type }) => {
 
                 <Button variant="contained" onClick={handlePrint}>Print</Button>
 
-                <Button variant="contained"  onClick={() => sendWhatshappMsg(saleData)} className='bg-green-600'>Whatshapp</Button>
+                <Button variant="contained" onClick={() => sendWhatshappMsg(saleData)} className='bg-green-600'>Whatshapp</Button>
 
                 <Button variant="contained" onClick={() => navigate(-1)}>Go Back</Button>
             </div>

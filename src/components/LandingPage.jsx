@@ -65,7 +65,7 @@ const LandingPage = () => {
 
             {/* <section id="about" className="w-10/12 mx-auto py-4">
                 About section
-                <p>We hae experince of 50years.</p>
+                <p>We have experince of 50years.</p>
             </section> */}
 
 

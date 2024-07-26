@@ -15,6 +15,7 @@ import Product from './components/product/Product'
 import Home from './components/Home'
 import LandingPage from './components/LandingPage'
 import CustomerView from './components/customer/CustomerView'
+import CustomerView2 from './components/customer/CustomerView2'
 
 import CustomerReport from './components/reports/CustomerReport'
 import ProductReport from './components/reports/ProductReport'
@@ -45,7 +46,7 @@ const router = createBrowserRouter([
             },
             {
                 path : 'customer/:id',
-                element : <CustomerView/>
+                element : <CustomerView2/>
             },
             {
                 path : 'product',
