@@ -7,21 +7,31 @@
 }
 
 /* ************** Style for Link tag elements******************** */
-a{
+a {
     text-decoration: none;
     color: black;
 }
 
-a:hover{
+a:hover {
     text-decoration: underline;
 }
+
 /* ************** Style for Link tag elements******************** */
 
 
 @media print {
 
-   #navbar,#sidebar,#saleView-buttons{
-    display: none !important;
-   }
-}
+    #navbar,
+    #sidebar,
+    #saleView-buttons,
+    #non-printable-content-advance,
+    #non-printable-content-gst {
+        display: none !important;
+    }
 
+    #signature {
+        /* margin-top: 3rem; */
+        padding-top: 3rem;
+    }
+
+}

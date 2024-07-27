@@ -110,10 +110,10 @@ const View = ({ type }) => {
                 <div>
 
                     {/* discount,GST and totalAmount */}
-                    <div className='flex justify-end my-4'>
+                    <div className='flex flex-col items-end justify-center my-4 gap-2'>
 
 
-                        <div className='flex flex-col gap-2'>
+                        <div id='non-printable-content-gst' className='flex flex-col gap-2'>
 
                             {/* discount */}
                             {
@@ -144,15 +144,15 @@ const View = ({ type }) => {
                                 )
                             }
 
-                            <p>Total Amount : <span>{saleData?.orderPrice} ₹</span></p>
 
                         </div>
 
+                        <p>Total Amount : <span className='text-lg font-medium'>{saleData?.orderPrice} ₹</span></p>
 
                     </div>
 
                     {/* advance and note */}
-                    <div className='flex flex-col gap-2 items-start'>
+                    <div id='non-printable-content-advance' className='flex flex-col gap-2 items-start'>
                         {
                             saleData.advance > 0 && (
                                 <p>Advance : <span>{saleData.advance} ₹</span></p>
@@ -165,9 +165,9 @@ const View = ({ type }) => {
                             )
                         }
                     </div>
- 
 
-                    <div className=' flex justify-end my-6'>
+
+                    <div id='signature' className=' flex justify-end my-6'>
 
                         <div className='relative'>
                             <p className='italic font-semibold'>Digital Signature</p>

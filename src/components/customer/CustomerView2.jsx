@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, Link } from 'react-router-dom'
 
 
 import { apiConnector } from '../../utils/apiConnector';
@@ -104,6 +104,8 @@ const CustomerView = () => {
             />
 
             <hr />
+            <br />
+
 
             <OrderList
                 heading="Purchase"
@@ -113,6 +115,7 @@ const CustomerView = () => {
             />
 
             <hr />
+            <br />
 
             {/* END : ***************** Sale & Purchase List ******************** */}
 
@@ -125,6 +128,9 @@ const CustomerView = () => {
             />
 
 
+            <hr />
+            <br />
+
             <PaymentList
                 title="Payment"
                 payments={payments}
@@ -133,7 +139,8 @@ const CustomerView = () => {
             {/*  END : ************** Recevied & Payment payments ****************** */}
 
 
-
+            <hr />
+            <br />
 
 
             <div>
@@ -146,67 +153,21 @@ const CustomerView = () => {
 export default CustomerView;
 
 
-const OrderList2 = ({ heading, orders, totalAmount, totalAdvance }) => {
-    return (
-        <div>
-
-            <table className='table-auto border border-slate-500 border-collapse rounded w-full'>
-                <caption className="caption-top text-xl font-bold text-start my-1">
-                    {heading} List
-                </caption>
-                <thead>
-                    <tr>
-                        <th className='border border-slate-500 border-collapse rounded p-2 text-start'>Date</th>
-                        <th className='border border-slate-500 border-collapse rounded p-2 text-start'>Invoice No.</th>
-                        <th className='border border-slate-500 border-collapse rounded p-2 text-start'>Product Name</th>
-                        <th className='border border-slate-500 border-collapse rounded p-2 text-start'>Amount (₹)</th>
-                        <th className='border border-slate-500 border-collapse rounded p-2 text-start'>Advance (₹)</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {/* tr base on data */}
-                    {
-                        orders.map(order => {
-                            return (
-                                // <a className='bor block w-full'>
-                                <tr key={order._id} >
-                                    <td className='border border-slate-500 border-collapse rounded p-2'>{formattedDate(order?.createdAt)}</td>
-                                    <td className='border border-slate-500 border-collapse rounded p-2'>{order?.invoiceNo}</td>
-                                    <td className='border border-slate-500 border-collapse rounded p-2'>
-                                        {order?.products.map(product => product.productName).join(',  ')}
-                                    </td>
-                                    <td className='border border-slate-500 border-collapse rounded p-2'>{order?.orderPrice}</td>
-                                    <td className='border border-slate-500 border-collapse rounded p-2'>{order?.advance || "__"}</td>
-                                </tr>
-                                // {/* </a> */}
-                            )
-                        })
-                    }
-
-                    {/* total tr */}
-                    <tr>
-                        <td className='border border-slate-500 border-collapse p-2 py-3 text-md font-bold' colSpan={3}>Total</td>
-                        <td className='border border-slate-500 border-collapse p-2 py-3 text-md font-bold col-span-2'>{totalAmount}</td>
-                        <td className='border border-slate-500 border-collapse p-2 py-3 text-md font-bold col-span-2'>{totalAdvance}</td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </div>
-    )
-};
-
 const OrderList = ({ heading, orders, totalAmount, totalAdvance }) => {
+
+    const [ordersData, setOrdersData] = useState([]);
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5; // Number of items to show per page
+    const [itemsPerPage, setItemsPerPage] = useState(5);  // Number of items to show per page
+
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
     // Calculate total pages
-    const totalPages = Math.ceil(orders.length / itemsPerPage);
+    const totalPages = Math.ceil(ordersData.length / itemsPerPage);
 
     // Get the data for the current page
-    const currentData = orders.slice(
+    const currentData = ordersData.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
@@ -215,10 +176,66 @@ const OrderList = ({ heading, orders, totalAmount, totalAdvance }) => {
     const goToPreviousPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
     const goToNextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
 
+    // Filter orders by date ( All data )
+    const filterOrders = (orders) => {
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+
+        // So that match with only Date, not bases on morning, evening, midnight
+        if (start) start.setHours(0, 0, 0, 0);
+        if (end) end.setHours(23, 59, 59, 999);
+
+        console.log(start, end)
+        return orders.filter(order => {
+            const orderDate = new Date(order.createdAt);
+            orderDate.setHours(0, 0, 0, 0);
+            return (!start || orderDate >= start) && (!end || orderDate <= end);
+        });
+    }
+
+    // set the ordersData
+    useEffect(() => {
+        setOrdersData(orders);
+    }, [orders]);
+
+    // Filter out  the ordersData as startDate & endDate changed
+    useEffect(() => {
+        setOrdersData(filterOrders(orders));
+    }, [startDate, endDate]);
+
+
     return (
         <div className='py-1 pb-5'>
+
+            {/* start & end date */}
+            <div className="mb-4">
+
+                <label>
+                    Start Date:
+                    <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className="ml-2 p-1 border border-gray-300 rounded"
+                    />
+                </label>
+
+                <label className="ml-4">
+                    End Date:
+                    <input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        className="ml-2 p-1 border border-gray-300 rounded"
+                    />
+                </label>
+
+
+            </div>
+
+            {/* table data */}
             <table className='table-auto border border-slate-500 border-collapse rounded w-full'>
-                <caption className="caption-top text-xl font-bold text-start my-1">
+                <caption className="caption-top text-xl font-bold text-start my-1 text-rose-950">
                     {heading} List
                 </caption>
                 <thead>
@@ -234,7 +251,15 @@ const OrderList = ({ heading, orders, totalAmount, totalAdvance }) => {
                     {currentData.map(order => (
                         <tr key={order._id}>
                             <td className='border border-slate-500 border-collapse rounded p-2'>{formattedDate(order?.createdAt)}</td>
-                            <td className='border border-slate-500 border-collapse rounded p-2'>{order?.invoiceNo}</td>
+
+                            <td className='border border-slate-500 border-collapse rounded p-2'>
+
+                                <Link to={ order.type === "Sell" ? `/sale/${order._id}` : `/sale/${order._id}` } className='p-1 cursor-pointer'>
+                                    {order?.invoiceNo}
+                                </Link>
+
+                            </td>
+
                             <td className='border border-slate-500 border-collapse rounded p-2'>
                                 {order?.products.map(product => product.productName).join(', ')}
                             </td>
@@ -260,9 +285,37 @@ const OrderList = ({ heading, orders, totalAmount, totalAdvance }) => {
                 >
                     Previous
                 </button>
-                <span>
-                    Page {currentPage} of {totalPages}
-                </span>
+
+
+                <div className='flex gap-8 items-center'>
+
+
+                    <span>
+                        Page {currentPage} of {totalPages}
+                    </span>
+
+                    <span>
+                        <label htmlFor="itemsPerPage" className='text-sm'>Rows per page : </label>
+                        <select
+                            id='itemsPerPage'
+                            className='mx-2 p-1 px-2 rounded-md cursor-pointer'
+                            value={itemsPerPage}
+                            onChange={(e) => {
+                                setItemsPerPage(e.target.value)
+                                setCurrentPage(1)
+                            }}
+                        >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={15}>15</option>
+                            <option value={100}>100</option>
+                        </select>
+                    </span>
+
+
+                </div>
+
+
                 <button
                     className="bg-gray-300 text-gray-700 px-4 py-2 rounded disabled:opacity-50 hover:cursor-pointer"
                     onClick={goToNextPage}
@@ -278,8 +331,81 @@ const OrderList = ({ heading, orders, totalAmount, totalAdvance }) => {
 
 
 const PaymentList = ({ title, payments, totalAmount }) => {
+
+    const [paymentsData, setPaymentsData] = useState([]);
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(5);
+
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+
+    // Calculate total pages
+    const totalPages = Math.ceil(paymentsData.length / itemsPerPage);
+
+    // Get the data for current page
+    const currentData = paymentsData.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const goToPreviousPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
+    const goToNextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
+
+    // Filter out paymentsData base on date range
+    function filterPayments(payments) {
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+
+        // So that match with only Date, not bases on morning, evening, midnight
+        if (start) start.setHours(0, 0, 0, 0);
+        if (end) end.setHours(23, 59, 59, 999);
+        return payments.filter(payment => {
+            const paymentDate = new Date(payment.createdAt);
+            paymentDate.setHours(0, 0, 0, 0);
+            return (!start || paymentDate >= start) && (!end || paymentDate <= end);
+        });
+    }
+
+
+    // Set the paymentsData
+    useEffect(() => {
+        setPaymentsData(payments);
+    }, [payments]);
+
+    // Filter out the paymentsData as startDate & endDate changed
+    useEffect(() => {
+        setPaymentsData(filterPayments(payments));
+    }, [startDate, endDate]);
+
     return (
         <div>
+
+            {/* start & end date */}
+            <div className="mb-4">
+
+                <label>
+                    Start Date:
+                    <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className="ml-2 p-1 border border-gray-300 rounded"
+                    />
+                </label>
+
+                <label className="ml-4">
+                    End Date:
+                    <input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        className="ml-2 p-1 border border-gray-300 rounded"
+                    />
+                </label>
+
+
+            </div>
 
             <table className='table-auto border border-slate-500 border-collapse rounded w-full'>
                 <caption className="caption-top text-xl font-bold text-start my-1">{title}</caption>
@@ -294,7 +420,7 @@ const PaymentList = ({ title, payments, totalAmount }) => {
                 <tbody>
                     {/* tr base on data */}
                     {
-                        payments.map(payment => {
+                        currentData.map(payment => {
                             return (
                                 <tr key={payment._id}>
                                     <td className='border border-slate-500 border-collapse rounded p-2'>{formattedDate(payment.createdAt)}</td>
@@ -313,6 +439,56 @@ const PaymentList = ({ title, payments, totalAmount }) => {
                     </tr>
                 </tbody>
             </table>
+
+
+            {/* Pagination Controls */}
+            <div className="flex justify-between items-center mt-4">
+                <button
+                    className="bg-gray-300 text-gray-700 px-4 py-2 rounded disabled:opacity-50 hover:cursor-pointer"
+                    onClick={goToPreviousPage}
+                    disabled={currentPage === 1}
+                >
+                    Previous
+                </button>
+
+
+                <div className='flex gap-8 items-center'>
+
+
+                    <span>
+                        Page {currentPage} of {totalPages}
+                    </span>
+
+                    <span>
+                        <label htmlFor="itemsPerPage" className='text-sm'>Rows per page : </label>
+                        <select
+                            id='itemsPerPage'
+                            className='mx-2 p-1 px-2 rounded-md cursor-pointer'
+                            value={itemsPerPage}
+                            onChange={(e) => {
+                                setItemsPerPage(e.target.value)
+                                setCurrentPage(1)
+                            }}
+                        >
+                            <option className='py-4 my-1' value={5}>5</option>
+                            <option className='py-4 my-1' value={10}>10</option>
+                            <option className='py-4 my-1' value={15}>15</option>
+                            <option className='py-4 my-1' value={100}>100</option>
+                        </select>
+                    </span>
+
+
+                </div>
+
+
+                <button
+                    className="bg-gray-300 text-gray-700 px-4 py-2 rounded disabled:opacity-50 hover:cursor-pointer"
+                    onClick={goToNextPage}
+                    disabled={currentPage === totalPages}
+                >
+                    Next
+                </button>
+            </div>
 
         </div>
     )
