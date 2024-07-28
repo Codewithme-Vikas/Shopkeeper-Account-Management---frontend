@@ -47,10 +47,10 @@ export const customFilter = (field, value) => {
 
 
 // use for the get to know the total area of the product
-export const productTotalArea = (height,width, quantity) => {
-    
+export const productTotalArea = (height, width, quantity) => {
+
     let area = height * width * quantity;
-    if( area <= 0){
+    if (area <= 0) {
         return "__"
     }
     return area.toFixed(2);
@@ -130,4 +130,66 @@ export const sendWhatshappMsg = (saleData) => {
 
     // send msg by link
     window.open(`https://wa.me/${customer.phone}?text=${text}`, '_blank')
+};
+
+
+// ************************ Print the Lists from the cutomer view page **************
+export const printList = (title, ref) => {
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>Print ${title} List</title>
+                <style>
+                    /* Add your print styles here */
+                    .table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        border: 1px solid #718096; /* Tailwind color slate-500 */
+                        border-radius: 0.375rem; /* Tailwind rounded equivalent */
+                    }
+
+                    .table th, .table td {
+                        border: 1px solid #718096; /* Tailwind color slate-500 */
+                        padding: 0.5rem; /* Tailwind p-2 equivalent */
+                        text-align: left; /* Tailwind text-start equivalent */
+                    }
+
+                    .table th {
+                        font-weight: bold;
+                    }
+
+                    .table tr:last-child td {
+                        padding-top: 0.75rem; /* Tailwind py-3 equivalent */
+                        padding-bottom: 0.75rem; /* Tailwind py-3 equivalent */
+                        font-size: 1.125rem; /* Tailwind text-md equivalent */
+                        font-weight: bold;
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>${title} List</h1>
+                ${ref.current.innerHTML}
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+    printWindow.close();
+};
+
+// ******************** filter out base on the date range *********************
+export const filterDataOnDate = (startDate, endDate, data)=>{
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
+
+    // So that match with only Date, not bases on morning, evening, midnight
+    if (start) start.setHours(0, 0, 0, 0);
+    if (end) end.setHours(23, 59, 59, 999);
+
+    return data.filter(ele => {
+        const eleDate = new Date(ele.createdAt);
+        eleDate.setHours(0,0,0,0);
+        return (!start || eleDate >= start) && (!end || eleDate <= end );
+    })
 };

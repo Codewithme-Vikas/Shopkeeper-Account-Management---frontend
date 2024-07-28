@@ -16,12 +16,13 @@ import { CREATE_ORDER } from '../../../utils/APIs';
 import { increaseBuyOrders, increaseSellOrders } from '../../../slices/data';
 import { fetchCustomers } from '../../../services/customer';
 import { fetchProducts } from '../../../services/product';
+import { useNavigate } from 'react-router-dom';
 
 const Invoice = ({ type }) => {
 
     const { customers, products, totalSellOrders, totalBuyOrders } = useSelector(store => store.data);
 
-    
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     // filter out appropriate customers and  sort in alphabetic manner
@@ -88,7 +89,9 @@ const Invoice = ({ type }) => {
                 note: note
             }
 
-            await apiConnector(CREATE_ORDER, 'POST', orderData)
+            const {orderDoc} = await apiConnector(CREATE_ORDER, 'POST', orderData)
+            
+
             toast.success(`${type} add successfully`);
 
             // sendWhatshappMsg(orderDoc);
@@ -101,6 +104,9 @@ const Invoice = ({ type }) => {
 
             // reset all the state values
             resetHandler();
+
+            // navigate to the order view page
+            navigate(`/${type}/${orderDoc._id}`);
 
         } catch (error) {
             console.log('ORDER DATA API ERROR.............', error);
