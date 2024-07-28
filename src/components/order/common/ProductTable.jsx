@@ -1,19 +1,20 @@
 import { DataGrid } from '@mui/x-data-grid';
+import { productAmount, productTotalArea } from '../../../utils/helper';
 
 const columns = [
     { field: 'id', headerName: 'S.N.', width: 60 },
     { field: 'productName', headerName: 'Product name', width: 150 },
     { field: 'height', headerName: 'Height', width: 60, type: 'number' },
     { field: 'width', headerName: 'Width', type: 'number', width: 60 },
+    { field: 'quantity', headerName: 'Quantity', type: 'number', width: 70, },
     {
         field: 'area',
-        headerName: 'Area',
-        description: 'Area of the product.',
+        headerName: 'Total Area',
+        description: 'Area of the products.',
         sortable: false,
         width: 80,
-        valueGetter: (value, row) => row.height * row.width || '_',
+        valueGetter: (value, row) => productTotalArea( row.height , row.width , row.quantity) || '_',
     },
-    { field: 'quantity', headerName: 'Quantity', type: 'number', width: 70, },
     { field: 'price', headerName: 'Price', type: 'number', width: 100, },
     { field: 'amount', headerName: 'Amount', type: 'number', width: 100, },
     { field: 'note', headerName: 'Note', width: 250, },
@@ -27,23 +28,21 @@ export default function ProductTable({ products }) {
         const obj = {
             ...product,
             id: index + 1,
-            amount: (product.height && product.width) ?
-                product.height * product.width * product.quantity * product.price :
-                product.quantity * product.price,
+            amount : productAmount(product),
         }
         return obj;
     });
 
 
     return (
-        <div className="max-h-[400px] w-full" >
+        <div className="w-full" >
             <DataGrid
                 rows={productsList}
                 columns={columns}
                 initialState={{
                     pagination: {
                         paginationModel: {
-                            pageSize: 10,
+                            pageSize: 5,
                         },
                     },
                 }}

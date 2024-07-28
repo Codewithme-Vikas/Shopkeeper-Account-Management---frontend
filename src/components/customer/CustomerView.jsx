@@ -4,8 +4,11 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 
 import { apiConnector } from '../../utils/apiConnector';
-import { formattedDate } from '../../utils/helper';
-import { GET_CUSTOMER } from '../../utils/APIs'
+import { GET_CUSTOMER } from '../../utils/APIs';
+
+import OrderList from "./view_components/OrderList";
+import PaymentList from "./view_components/PaymentList";
+import Spinner from "../common/Spinner"
 
 const CustomerView = () => {
     const { id } = useParams();
@@ -13,15 +16,27 @@ const CustomerView = () => {
 
     const [loading, setLoading] = useState(false);
     const [customer, setCustomer] = useState('');
-    const [sales, setSales] = useState([]);
-    const [payments, setPayment] = useState([]);
+    const [buyOrders, setBuyOrders] = useState([]);
+    const [sellOrders, setSellOrders] = useState([]);
+    const [receivedPayments, setRceivedPayments] = useState([]);
+    const [payments, setPayments] = useState([]);
 
-    const totalSaleAmount = sales.reduce((total, sale) => total + sale.orderPrice, 0);
 
-    // filter sales those have advance amount and then add by reduce method
-    const totalAdvanceAmount = sales.filter(sale => sale.advance).reduce((total, sale) => total + sale.advance, 0);
+    // To Do : use useMemo ( no need to calculate it again and again )  -- [ React compiler should do it  , React 19]
+
+    // Order related 
+    const totalSaleAmount = sellOrders.reduce((total, order) => total + order.orderPrice, 0);
+    const totalBuyAmount = buyOrders.reduce((total, order) => total + order.orderPrice, 0);
+    // filter orders those have advance amount and then add by reduce method
+    const totalSaleAdvance = sellOrders.filter(order => order.advance).reduce((total, order) => total + order.advance, 0);
+    const totalBuyAdvance = buyOrders.filter(order => order.advance).reduce((total, order) => total + order.advance, 0);
+
+    // payment related
+    const totalReceivdAmount = receivedPayments.reduce((total, payment) => total + payment.amount, 0);
     const totalPaymentAmount = payments.reduce((total, payment) => total + payment.amount, 0);
-    const balance = totalSaleAmount - totalAdvanceAmount - totalPaymentAmount;
+
+    // total balance
+    const balance = totalSaleAmount - totalSaleAdvance - totalBuyAmount + totalBuyAdvance - totalReceivdAmount + totalPaymentAmount;
 
     async function getCustomer() {
         setLoading(true);
@@ -29,8 +44,13 @@ const CustomerView = () => {
             const { customerDoc } = await apiConnector(GET_CUSTOMER + id);
 
             setCustomer(customerDoc);
-            setSales(customerDoc?.orders);
-            setPayment(customerDoc?.payments)
+
+            // ***filter buy and sell type orders***
+            setBuyOrders(customerDoc?.orders.filter(order => order.type === "Buy"));
+            setSellOrders(customerDoc?.orders.filter(order => order.type === "Sell"));
+            // ***filter Receivd and Payment type payments***
+            setRceivedPayments(customerDoc?.payments.filter(payment => payment.type === "Received"));
+            setPayments(customerDoc?.payments.filter(payment => payment.type === "Payment"));
 
 
         } catch (error) {
@@ -45,11 +65,11 @@ const CustomerView = () => {
     }, []);
 
 
-    return (
+    return loading ? <Spinner/> : (
         <div className='px-6 flex flex-col gap-6'>
 
 
-            {/* customer information */}
+            {/* Customer Information */}
             <div className='gap-2'>
 
 
@@ -60,7 +80,6 @@ const CustomerView = () => {
 
                         <p className='text-base font-medium'>Mob : {customer.phone}</p>
                         <p className='text-base font-medium'>Email : {customer.email || "__"}</p>
-                        <p className='text-base font-medium'>Account Type : {customer.accountType}</p>
                     </div>
 
                     <div className='flex flex-col  items-start gap-2'>
@@ -72,124 +91,41 @@ const CustomerView = () => {
 
             </div>
 
-            {/* net balance */}
+            {/* Net Balance */}
             <div>
                 <p className='text-xl font-medium'>Balance :
-
-                    {/* if customer is buyer */}
-                    {
-                        customer.accountType === 'Buyer' && (
-                            <>
-                                {
-                                    balance > 0 ?
-                                        <span className='font-bold text-rose-500'>{balance} ₹</span> :
-                                        <span className='font-bold text-green-500'>{Math.abs(balance)} ₹</span>
-                                }
-                            </>
-                        )
-                    }
-
-                    {/* if customer is buyer */}
-                    {
-                        customer.accountType === 'Seller' && (
-                            <>
-                                {
-                                    balance > 0 ?
-                                        <span className='font-bold text-green-500'>{balance} ₹</span> :
-                                        <span className='font-bold text-rose-500'>{Math.abs(balance)} ₹</span>
-                                }
-                            </>
-                        )
-                    }
-
+                    <span className={`${balance >= 0 ? "text-green-500" : "text-red-500"} font-bold text-green-500 mx-1`}> {balance} ₹</span>
                 </p>
             </div>
 
-            {/* sale list */}
-            <div>
-
-                <table className='table-auto border border-slate-500 border-collapse rounded w-full'>
-                    <caption className="caption-top text-xl font-bold text-start my-1">
-                    {customer.accountType === 'Buyer' ? 'Sale ' : 'Purchase '} List
-                    </caption>
-                    <thead>
-                        <tr>
-                            <th className='border border-slate-500 border-collapse rounded p-2 text-start'>Date</th>
-                            <th className='border border-slate-500 border-collapse rounded p-2 text-start'>Invoice No.</th>
-                            <th className='border border-slate-500 border-collapse rounded p-2 text-start'>Product Name</th>
-                            <th className='border border-slate-500 border-collapse rounded p-2 text-start'>{customer.accountType === 'Buyer' ? 'Sale ' : 'Purchase '} {' Amount '} (₹)</th>
-                            <th className='border border-slate-500 border-collapse rounded p-2 text-start'>Advance (₹)</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {/* tr base on data */}
-                        {
-                            sales.map(sale => {
-                                return (<tr key={sale._id}>
-                                    <td className='border border-slate-500 border-collapse rounded p-2'>{formattedDate(sale?.createdAt)}</td>
-                                    <td className='border border-slate-500 border-collapse rounded p-2'>{sale?.invoiceNo}</td>
-                                    <td className='border border-slate-500 border-collapse rounded p-2'>
-                                        {sale?.products.map(product => product.productName).join(',  ')}
-                                    </td>
-                                    <td className='border border-slate-500 border-collapse rounded p-2'>{sale?.orderPrice}</td>
-                                    <td className='border border-slate-500 border-collapse rounded p-2'>{sale?.advance || "__"}</td>
-                                </tr>)
-                            })
-                        }
-
-                        {/* total tr */}
-                        <tr>
-                            <td className='border border-slate-500 border-collapse p-2 py-3 text-md font-bold' colSpan={3}>Total</td>
-                            <td className='border border-slate-500 border-collapse p-2 py-3 text-md font-bold col-span-2'>{totalSaleAmount}</td>
-                            <td className='border border-slate-500 border-collapse p-2 py-3 text-md font-bold col-span-2'>{totalAdvanceAmount}</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-            </div>
+            {/* START : ***************** Sale & Buy List ******************** */}
+            <OrderList
+                title="Sale"
+                orders={sellOrders}
+            />
 
 
 
-            {/*  Payments */}
-            <div>
-
-                <table className='table-auto border border-slate-500 border-collapse rounded w-full'>
-                    <caption className="caption-top text-xl font-bold text-start my-1">
-                        {customer.accountType === 'Buyer' ? 'Received' : 'Payment'}
-                    </caption>
-                    <thead>
-                        <tr>
-                            <th className='border border-slate-500 border-collapse rounded p-2 text-start'>Date</th>
-                            <th className='border border-slate-500 border-collapse rounded p-2 text-start'>Note</th>
-                            <th className='border border-slate-500 border-collapse rounded p-2 text-start'>	{customer.accountType === 'Buyer' ? 'Received' : 'Payment'} (₹)</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {/* tr base on data */}
-                        {
-                            payments.map(payment => {
-                                return (
-                                    <tr key={payment._id}>
-                                        <td className='border border-slate-500 border-collapse rounded p-2'>{formattedDate(payment.createdAt)}</td>
-                                        <td className='border border-slate-500 border-collapse rounded p-2'>{payment.note}</td>
-                                        <td className='border border-slate-500 border-collapse rounded p-2'>{payment.amount}</td>
-                                    </tr>
-                                )
-                            })
-                        }
+            <OrderList
+                title="Purchase"
+                orders={buyOrders}
+            />
 
 
-                        {/* total tr */}
-                        <tr>
-                            <td className='border border-slate-500 border-collapse p-2 py-3 text-md font-bold' colSpan={2}>Total</td>
-                            <td className='border border-slate-500 border-collapse p-2 py-3 text-md font-bold col-span-2'>{totalPaymentAmount}</td>
-                        </tr>
-                    </tbody>
-                </table>
+            {/* END : ***************** Sale & Purchase List ******************** */}
 
-            </div>
+
+            {/*  START : ************** Recevied & Payment payments ****************** */}
+            <PaymentList
+                title="Received"
+                payments={receivedPayments}
+            />
+
+            <PaymentList
+                title="Payment"
+                payments={payments}
+            />
+            {/*  END : ************** Recevied & Payment payments ****************** */}
 
 
             <div>
@@ -199,4 +135,4 @@ const CustomerView = () => {
     )
 }
 
-export default CustomerView
+export default CustomerView;

@@ -52,9 +52,6 @@ const columns = [
         }
     },
     {
-        name: "accountType", label: "Type",
-    },
-    {
         name: '_id',
         label: 'Actions',
         options: {
@@ -87,7 +84,7 @@ const CustomerList = () => {
             ...customer,
             index : index + 1,
         }
-    })
+    });
     
     // MUI table options
     const options = {

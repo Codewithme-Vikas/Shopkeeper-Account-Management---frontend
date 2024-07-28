@@ -60,16 +60,15 @@ const EditCustomerForm = ({ customerId, setOpen }) => {
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
     const [email, setEmail] = useState('');
-    const [GSTNumer, setGSTNumber] = useState('');
+    const [GSTNumber, setGSTNumber] = useState('');
     const [PAN, setPAN] = useState('');
-    const [accountType, setAccountType] = useState('Buyer');
 
     async function submitHandler(e) {
         e.preventDefault();
         try {
-            const customerObj = { customerId, name, phone, email, address, GSTNumer, PAN, accountType };
+            const customerObj = { customerId, name, phone, email, address, GSTNumber, PAN };
 
-            const data = await apiConnector(UPDATE_CUSTOMER, 'POST', customerObj);
+            await apiConnector(UPDATE_CUSTOMER, 'POST', customerObj);
             toast.success('Update Customer')
             setOpen(false);
             dispatch(fetchCustomers());
@@ -86,9 +85,8 @@ const EditCustomerForm = ({ customerId, setOpen }) => {
             setPhone(customerDoc?.phone)
             setAddress(customerDoc?.address)
             setEmail(customerDoc?.email)
-            setGSTNumber(customerDoc?.GSTNumer)
+            setGSTNumber(customerDoc?.GSTNumber)
             setPAN(customerDoc?.PAN);
-            setAccountType(customerDoc?.accountType);
         } catch (error) {
             // Handle the error at the appropriate level in your application
             toast.error(error.message);
@@ -118,26 +116,10 @@ const EditCustomerForm = ({ customerId, setOpen }) => {
 
                 {/* gst no. and pan no */}
                 <Box sx={{ display: 'flex', gap: '16px' }}>
-                    <TextField value={GSTNumer} onChange={(e) => setGSTNumber(e.target.value)} fullWidth id="GSTNumber" name='GSTNumber' label="GST No." type='text' />
+                    <TextField value={GSTNumber} onChange={(e) => setGSTNumber(e.target.value)} fullWidth id="GSTNumber" name='GSTNumber' label="GST No." type='text' />
                     <TextField value={PAN} onChange={(e) => setPAN(e.target.value)} fullWidth id="PAN" name='PAN' label="PAN No." type="text" />
                 </Box>
 
-                {/* account type - buyer or seller */}
-                <div>
-                    <InputLabel id="accountTypeLabel" className='mb-2'>Customer Type</InputLabel>
-                    <Select
-                        className='w-full'
-                        labelId="accountTypeLabel"
-                        id="demo-simple-select"
-                        value={accountType}
-                        onChange={(e) => setAccountType(e.target.value)}
-                        required
-                        name='accountType'
-                    >
-                        <MenuItem value="Buyer">Buyer</MenuItem>
-                        <MenuItem value="Seller">Seller</MenuItem>
-                    </Select>
-                </div>
 
                 <div>
                     <Button variant="contained" type='submit'>Submit</Button>

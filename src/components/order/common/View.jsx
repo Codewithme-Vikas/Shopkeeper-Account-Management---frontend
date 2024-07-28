@@ -8,6 +8,7 @@ import FormLogo from '../../common/FormLogo';
 import { fetchSale } from '../../../services/order';
 import { formattedDate, sendWhatshappMsg } from '../../../utils/helper';
 import ProductTable from './ProductTable';
+import Signature from "../../../assets/signature.png"
 
 const View = ({ type }) => {
 
@@ -108,11 +109,11 @@ const View = ({ type }) => {
 
                 <div>
 
+                    {/* discount,GST and totalAmount */}
+                    <div className='flex flex-col items-end justify-center my-4 gap-2'>
 
-                    <div className='flex justify-end my-4'>
 
-
-                        <div className='flex flex-col gap-2'>
+                        <div id='non-printable-content-gst' className='flex flex-col gap-2'>
 
                             {/* discount */}
                             {
@@ -143,12 +144,15 @@ const View = ({ type }) => {
                                 )
                             }
 
-                            <p>Total Amount : <span>{saleData?.orderPrice} ₹</span></p>
 
                         </div>
+
+                        <p>Total Amount : <span className='text-lg font-medium'>{saleData?.orderPrice} ₹</span></p>
+
                     </div>
 
-                    <div className='flex flex-col gap-2 items-start'>
+                    {/* advance and note */}
+                    <div id='non-printable-content-advance' className='flex flex-col gap-2 items-start'>
                         {
                             saleData.advance > 0 && (
                                 <p>Advance : <span>{saleData.advance} ₹</span></p>
@@ -162,9 +166,27 @@ const View = ({ type }) => {
                         }
                     </div>
 
+
+                    <div id='signature' className=' flex justify-end my-6'>
+
+                        <div className='relative'>
+                            <p className='italic font-semibold'>Digital Signature</p>
+                            <img src={Signature} alt='Ritik' className='absolute left-0 bottom-2 '></img>
+                        </div>
+                    </div>
+
                 </div>
                 {/* END : *******************discount, GST,Advance,totalAmount,note****************  */}
 
+
+                {/* START : ***************** Digital Signature ***************************** */}
+
+
+
+
+
+
+                {/* END : ***************** Digital Signature ***************************** */}
 
 
 
@@ -184,7 +206,7 @@ const View = ({ type }) => {
 
                 <Button variant="contained" onClick={handlePrint}>Print</Button>
 
-                <Button variant="contained"  onClick={() => sendWhatshappMsg(saleData)} className='bg-green-600'>Whatshapp</Button>
+                <Button variant="contained" onClick={() => sendWhatshappMsg(saleData)} className='bg-green-600'>Whatshapp</Button>
 
                 <Button variant="contained" onClick={() => navigate(-1)}>Go Back</Button>
             </div>

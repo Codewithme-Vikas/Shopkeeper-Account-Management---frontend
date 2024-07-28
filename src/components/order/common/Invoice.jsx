@@ -16,16 +16,17 @@ import { CREATE_ORDER } from '../../../utils/APIs';
 import { increaseBuyOrders, increaseSellOrders } from '../../../slices/data';
 import { fetchCustomers } from '../../../services/customer';
 import { fetchProducts } from '../../../services/product';
+import { useNavigate } from 'react-router-dom';
 
 const Invoice = ({ type }) => {
 
     const { customers, products, totalSellOrders, totalBuyOrders } = useSelector(store => store.data);
 
-    
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     // filter out appropriate customers and  sort in alphabetic manner
-    const customersList = [...customers].filter(customFilter('accountType' , type === 'sale' ? 'Buyer' : 'Seller' )).sort(customSort('name'));
+    const customersList = [...customers].sort(customSort('name'));
     
     // ****************** Form/API data - Start**********************
     const invoiceNo = type === 'sale' ? (totalSellOrders + 1) : (totalBuyOrders + 1);
@@ -44,7 +45,7 @@ const Invoice = ({ type }) => {
     // amount after discount
     const discountAmount = productsAmount - discount;
     // amount after tax
-    const totalAmount = discountAmount + (discountAmount * (CGST + SGST + IGST)) / 100;
+    const totalAmount = Math.round(discountAmount + (discountAmount * (CGST + SGST + IGST)) / 100);
 
     // ******************Form/API Data - End **********************
 
@@ -77,7 +78,6 @@ const Invoice = ({ type }) => {
                     address: selectedCustomer.address,
                     GSTNumber: selectedCustomer.GSTNumber,
                     PAN: selectedCustomer.PAN,
-                    accountType: selectedCustomer.accountType
                 },
                 type: type === 'sale' ? 'Sell' : 'Buy',
                 invoiceNo: invoiceNo,
@@ -90,9 +90,11 @@ const Invoice = ({ type }) => {
             }
 
             const {orderDoc} = await apiConnector(CREATE_ORDER, 'POST', orderData)
+            
+
             toast.success(`${type} add successfully`);
 
-            sendWhatshappMsg(orderDoc);
+            // sendWhatshappMsg(orderDoc);
 
             if( type === 'sale'){
                 dispatch(increaseSellOrders());
@@ -102,6 +104,9 @@ const Invoice = ({ type }) => {
 
             // reset all the state values
             resetHandler();
+
+            // navigate to the order view page
+            navigate(`/${type}/${orderDoc._id}`);
 
         } catch (error) {
             console.log('ORDER DATA API ERROR.............', error);

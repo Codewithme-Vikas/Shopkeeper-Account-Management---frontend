@@ -9,6 +9,8 @@ const FormLogo = ({title}) => {
             <div className='my-1'>
                 <p className='mb-1'>ADD. Silarpur Road, Dankaur Distt - G.B. Nagar (U.P.) - 203201</p>
                 <p>Mob. 9412845464, Email ID - yadav.ritik@gmail.com</p>
+                <p className='my-1'>A/C No. : 42745671639, IFSC : SBIN0002329, SBI Dankaur</p>
+                <p className='my-1'>UPI ID : 42745671639@sbi</p>
             </div>
             
         </div>

@@ -15,3 +15,6 @@ Currently, two official plugins are available:
 # There are two types of Customers - 
     1. Buyer
     2. Seller
+
+# Formula for balance
+    balance = totalSell - totalSellAdvance - totalBuy + totalBuyAdvance  - totalReceived + totalPayament
