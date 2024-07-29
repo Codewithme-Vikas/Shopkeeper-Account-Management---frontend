@@ -94,7 +94,7 @@ export const sendWhatshappMsg = (saleData) => {
             msg += `- Rate : ${product.price} ₹\n`;
             if (product.width && product.height) {
                 msg += `- Height: ${product.height}, Width: ${product.width}\n`;
-                msg += `- Area: ${product.height * product.width}\n`; // Assuming 'height' and 'width' are available for each product
+                msg += `- Total Area: ${product.height * product.width * product.quantity}\n`;
             }
             msg += `- Price: ${productAmount(product)} ₹\n`;
         });
