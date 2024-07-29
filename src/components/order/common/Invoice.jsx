@@ -94,7 +94,7 @@ const Invoice = ({ type }) => {
 
             toast.success(`${type} add successfully`);
 
-            // sendWhatshappMsg(orderDoc);
+            sendWhatshappMsg(orderDoc);
 
             if( type === 'sale'){
                 dispatch(increaseSellOrders());
