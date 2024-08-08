@@ -40,7 +40,8 @@ const columns = [
         label: "GST No.",
         options: {
             filter: true,
-            customBodyRender: (value) => value ? value : '__'
+            customBodyRender: (value) => value ? value : '__',
+            display : false,
         }
     },
     {
@@ -50,6 +51,10 @@ const columns = [
             filter: true,
             customBodyRender: (value) => value ? value : '__'
         }
+    },
+    {
+        name : "balance",
+        label : "balance"
     },
     {
         name: '_id',
